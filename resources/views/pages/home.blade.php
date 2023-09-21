@@ -1,36 +1,66 @@
 @extends('layout')
-@section('home')
-<div class="col-sm-3">
-	<div class="left-sidebar">
-		<h2>Danh mục sản phẩm</h2>
-		<div class="panel-group category-products" id="accordian"><!--category-productsr-->
-			@foreach ($category as $key => $cate)
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h4 class="panel-title"><a href="{{URL::to('/danh-muc-san-pham/'.$cate->category_id)}}">{{$cate->category_name}}</a></h4>
+@section('sld-home')
+<section id="slider"><!--slider-->
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<div id="slider-carousel" class="carousel slide" data-ride="carousel">
+					<ol class="carousel-indicators">
+						<li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+						<li data-target="#slider-carousel" data-slide-to="1"></li>
+						<li data-target="#slider-carousel" data-slide-to="2"></li>
+					</ol>
+					
+					<div class="carousel-inner">
+						<div class="item active">
+							<div class="col-sm-6">
+								<h1><span>AC</span>-SHOP</h1>
+								<h2>Voucher giảm giá HOT!</h2>
+								<p>Voucher sẽ được chúng tôi đăng tại trang chủ vào mỗi dịp lễ!</p>
+							</div>
+							<div class="col-sm-6">
+								<img src="{{ asset('public/frontend/images/Sale1.jpg') }}" class="girl img-responsive" alt="" />
+							</div>
+						</div>
+						<div class="item">
+							<div class="col-sm-6">
+								<h1><span>AC</span>-SHOP</h1>
+								<h2>Sản phẩm chất lượng</h2>
+								<p>Cung cấp các sản phẩm tốt và an toàn cho mẹ và bé! </p>
+							</div>
+							<div class="col-sm-6">
+								<img src="{{ asset('public/frontend/images/Sale2.png') }}" class="girl img-responsive" alt="" />
+							</div>
+						</div>
+						
+						<div class="item">
+							<div class="col-sm-6">
+								<h1><span>AC</span>-SHOP</h1>
+								<h2>Thanh toán nhanh chóng</h2>
+								<p>Quý khách hàng có thể lựa chọn các hình thức thanh toán khác nhau!</p>
+							</div>
+							<div class="col-sm-6">
+								<img src="{{ asset('public/frontend/images/Sale3.png') }}" class="girl img-responsive" alt="" />
+							</div>
+						</div>
+						
 					</div>
+					
+					<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+						<i class="fa fa-angle-left"></i>
+					</a>
+					<a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+						<i class="fa fa-angle-right"></i>
+					</a>
 				</div>
-			@endforeach
-			
-		</div><!--/category-products-->
-	
-		<div class="brands_products"><!--brands_products-->
-			<h2>Thương hiệu	</h2>
-			<div class="brands-name">
-				@foreach ($brand as $key => $brand)
-				<ul class="nav nav-pills nav-stacked">
-					<li><a href="{{URL::to('/thuong-hieu-san-pham/'.$brand->brand_id)}}">{{$brand->brand_name}}</a></li>
-				</ul>
-				@endforeach
+				
 			</div>
-		</div><!--/brands_products-->
-		
-	
+		</div>
 	</div>
-</div>
+</section><!--/slider-->
 @endsection
 @section('content')
-		<div class="col-sm-9 padding-right">
+		<div class="col-sm-12 padding-right">
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Sản phẩm mới</h2>
 						@foreach ($all_product as $key => $product)
@@ -62,7 +92,6 @@
 									<div class="choose">
 										<ul class="nav nav-pills nav-justified">
 											<li><a href="#"><i class="fa fa-plus-square"></i>Yêu thích</a></li>
-											<li><a href="#"><i class="fa fa-plus-square"></i>So sánh</a></li>
 										</ul>
 									</div>
 								</div>
@@ -74,8 +103,8 @@
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Sản phẩm nổi bật</h2>
 						@foreach ($all_product as $key => $product)
-							@if ($product->product_id%2==0)
-								<div class="col-sm-6">
+							{{-- @if ($product->product_id%2==0) --}}
+								<div class="col-sm-3">
 									<div class="product-image-wrapper">
 										<div class="single-products">
 												<div class="productinfo text-center">
@@ -102,12 +131,11 @@
 										<div class="choose">
 											<ul class="nav nav-pills nav-justified">
 												<li><a href="#"><i class="fa fa-plus-square"></i>Yêu thích</a></li>
-												<li><a href="#"><i class="fa fa-plus-square"></i>So sánh</a></li>
 											</ul>
 										</div>
 									</div>
 								</div>
-							@endif
+							{{-- @endif --}}
 						@endforeach
 						
 						

@@ -39,6 +39,7 @@
           <tr>
             <th>STT</th>
             <th>Tên thương hiệu</th>
+            <th>Hình ảnh</th>
             <th>Ẩn/Hiện</th>
             <th>Mô tả</th>
             <th style="width:30px;"></th>
@@ -55,6 +56,7 @@
           <tr>
             <td>{{ $count }}</td>
             <td>{{ $brand_pro->brand_name }}</td>
+            <td><img src="public/uploads/brand/{{ $brand_pro->brand_image }}" height="100" width="100"></td>
             <td><span class="text-ellipsis">
             <?php 
               if ($brand_pro->brand_status==1){

@@ -79,7 +79,14 @@
 								?>
 								<li><a href="{{URL::to('/login-checkout')}}"><i class="fa fa-lock"></i> Thanh toán</a></li>
 								<?php } ?>
+								<?php 
 								
+								if($customer_id!=NULL && $shipping_id==NULL){
+								?>
+								<li><a href="{{URL::to('/don-hang/'.$customer_id)}}">Đơn hàng</a></li>
+								<?php
+									}
+								?>
 								<li><a href="{{URL::to('/gio-hang')}}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
 								<?php 
 								$customer_id = Session::get('customer_id');
@@ -103,117 +110,115 @@
 	
 		<div class="header-bottom"><!--header-bottom-->
 			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-7">
-						<div class="navbar-header">
-							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
-						</div>
-						<div class="mainmenu pull-left">
-							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a href="{{URL::to('/trangchu')}}" class="active">Trang chủ</a></li>
-								<li ><a href="{{URL::to('/san-pham')}}">Sản phẩm</i></a></li> 
-								<li><a href="{{URL::to('/gio-hang')}}">Giỏ Hàng</a></li>
-								<?php 
-								if($customer_id!=NULL && $shipping_id==NULL){
-								?>
-								<li><a href="{{URL::to('/don-hang/'.$customer_id)}}">Đơn hàng</a></li>
-								<?php
-									}
-								?>
-							</ul>
-						</div>
+				<div style="background-color: pink;" class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-1">
+						<a href="{{URL::to('/trangchu')}}" class="active"><img style="height: 82px; padding-top: 7px" src="public/frontend/images/logo.jpg" alt=""></a>
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-3" style="padding-top: 20px">
 						<form action="{{URL::to('/tim-kiem')}}" method="POST">
 							{{ csrf_field() }}
 						<div class="search_box pull-right">
-							<input type="text" name="keywords_submit" placeholder="Tìm kiếm sản phẩm"/>
-							<input type="submit" name="search_items" style="margin-top:0;color:#666;background-color:yellow" class="btn btn-success btn-sm" value="Tìm kiếm">
+							<input type="text" style="width: 350px" name="keywords_submit" placeholder="Bạn muốn tìm kiếm sản phẩm gì hôm nay?..."/>
+							<input type="submit" name="search_items" style="margin-top:0;color:#666;background-color:yellow" class="btn btn-success btn-sm" value="Tìm">
 						</div>
 						</form>
 					</div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-5">
+						<div class="mainmenu pull-left">
+							<ul class="nav navbar-nav collapse navbar-collapse">
+								<li style="background-color: #d80101">
+									<a style="color: white; font-size: 20px; font-weight: bold;" href="{{URL::to('/san-pham')}}">
+										<img style="height: 82px; padding-top: 7px" src="{{ asset('public/frontend/images/shop.png') }}" alt="">
+										Tất cả sản phẩm
+									</a>
+								</li> 
+								<li style="background-color: #fda702" class="dropdown">
+									<a href="#" style="color: white; font-size: 20px; font-weight: bold;" class="dropdown-toggle" data-toggle="dropdown">
+										<img style="height: 80px" src="{{ asset('public/frontend/images/baby.png') }}" alt="">
+										Cho bé<b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu custom-dropdown">
+										@foreach ($category as $key => $cate)
+											@if ($cate->category_desc == 'Dành cho bé')
+												<li><a href="{{URL::to('/danh-muc-san-pham/'.$cate->category_id)}}">{{$cate->category_name}}</a></li>
+											@endif
+										@endforeach
+									</ul>
+								</li>
+								<li style="background-color: #0072b0" class="dropdown">
+									<a href="#" style="color: white; font-size: 20px; font-weight: bold;" class="dropdown-toggle" data-toggle="dropdown">
+										<img style="height: 80px" src="{{ asset('public/frontend/images/mom.png') }}" alt="">
+										Cho mẹ<b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu custom-dropdown">
+										@foreach ($category as $key => $cate)
+											@if ($cate->category_desc == 'Dành cho mẹ')
+												<li><a href="{{URL::to('/danh-muc-san-pham/'.$cate->category_id)}}">{{$cate->category_name}}</a></li>
+											@endif
+										@endforeach
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-1"></div>
 				</div>
 			</div>
 		</div><!--/header-bottom-->
 	</header><!--/header-->
-	
-	<section id="slider"><!--slider-->
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-sm-12">
-					<div id="slider-carousel" class="carousel slide" data-ride="carousel">
-						<ol class="carousel-indicators">
-							<li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-							<li data-target="#slider-carousel" data-slide-to="1"></li>
-							<li data-target="#slider-carousel" data-slide-to="2"></li>
-						</ol>
-						
-						<div class="carousel-inner">
-							<div class="item active">
-								<div class="col-sm-6">
-									<h1><span>AC</span>-SHOP</h1>
-									<h2>Voucher giảm giá HOT!</h2>
-									<p>Voucher sẽ được chúng tôi đăng tại trang chủ vào mỗi dịp lễ!</p>
-								</div>
-								<div class="col-sm-6">
-									<img src="https://media.istockphoto.com/id/1182639214/photo/middle-age-couple-in-jewelry-store.jpg?s=612x612&w=0&k=20&c=SX9O8zt0pK3bpPJEEb9qcjW11eleKvDImPpT5FvVf3M=" class="girl img-responsive" alt="" />
-								</div>
-							</div>
-							<div class="item">
-								<div class="col-sm-6">
-									<h1><span>AC</span>-SHOP</h1>
-									<h2>Phong cách và thời thượng</h2>
-									<p>Cung cấp các sản phẩm từ những nhãn hiệu thời trang nổi tiếng hàng đầu thế giới! </p>
-								</div>
-								<div class="col-sm-6">
-									<img style="height: 326.9px" src="https://media.istockphoto.com/id/611204924/photo/modern-jewelry-store-interior-design.jpg?s=612x612&w=0&k=20&c=4vczd7HyPu_lPrFQh1ZL35g44LmrcPUXQMDDFIKR7H0=" class="girl img-responsive" alt="" />
-								</div>
-							</div>
-							
-							<div class="item">
-								<div class="col-sm-6">
-									<h1><span>AC</span>-SHOP</h1>
-									<h2>Thanh toán nhanh chóng</h2>
-									<p>Quý khách hàng có thể lựa chọn các hình thức thanh toán khác nhau!</p>
-								</div>
-								<div class="col-sm-6">
-									<img src="https://media.istockphoto.com/id/601031970/photo/young-woman-buying-a-golden-diamond-necklace.jpg?s=612x612&w=0&k=20&c=mNHkWrtOzPrApSxO9d6E07JhlUCOj1NuHUB84lnN2MQ=" class="girl img-responsive" alt="" />
-								</div>
-							</div>
-							
-						</div>
-						
-						<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
-							<i class="fa fa-angle-left"></i>
-						</a>
-						<a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
-							<i class="fa fa-angle-right"></i>
-						</a>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-	</section><!--/slider-->
-	<br>
-	<br>
+		@yield('sld-home')
 	<section>
 		<div class="container-fluid">
-			<div class="row">
-				@yield('home')
+			<div class="col-md-3 col-sm-3" style="padding-top: 15px">
+				<div class="left-sidebar">
+
+					<h2>Danh mục sản phẩm</h2>
+					<div class="panel-group category-products" style="padding-left: 44px" id="accordian"><!--category-productsr-->
+						@foreach ($category as $key => $cate)
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title"><a href="{{URL::to('/danh-muc-san-pham/'.$cate->category_id)}}">{{$cate->category_name}}</a></h4>
+								</div>
+							</div>
+						@endforeach
+						
+					</div><!--/category-products-->
+
+					<h2>Thương hiệu</h2>
+					<div class="panel-group text-center category-products" id="accordian"><!--brands_products-->
+						@foreach ($brand as $key => $brand)
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a href="{{URL::to('/thuong-hieu-san-pham/'.$brand->brand_id)}}">
+											<img style="height: 80px; width: 200px;" src="{{ asset('public/uploads/brand/' . $brand->brand_image) }}" alt="">
+										</a>
+									</h4>
+								</div>
+							</div>
+						@endforeach
+					</div><!--/brands_products-->
+					
+				
+				</div>
+			</div>
+			<div class="col-md-9 col-sm-9">
 				@yield('content')
 			</div>
 		</div>
 	</section>
-	
 	<footer id="footer"><!--Footer-->
 		
 		<div class="footer-widget">
+			<div class="container">
+				
+					
+			</div>	
+		</div>
+		
+		<div class="footer-bottom"> 
 			<div class="container">
 				<div class="row text-center text-xs-center text-sm-left text-md-left">
 					<div class="col-xs-12 col-sm-4 col-md-4">
@@ -241,13 +246,7 @@
 							<li class="list-inline-item"><a href="#" target="_blank"><i class="fa fa-envelope"></i></a></li>
 						</ul>
 					</div>
-				</div>	
-				</div>	
-			</div>
-		</div>
-		
-		<div class="footer-bottom"> 
-			<div class="container">
+				</div>
 				<div class="row">
 					<p class="pull-right">Designed by <span><a target="_blank" href="https://www.facebook.com/profile.php?id=100009845684044">Anh Châu</a></span></p>
 				</div>
@@ -255,9 +254,6 @@
 		</div>
 		
 	</footer><!--/Footer-->
-	
-
-  
     <script src="{{asset('public/frontend/js/jquery.js')}}"></script>
 	<script src="{{asset('public/frontend/js/bootstrap.min.js')}}"></script>
 	<script src="{{asset('public/frontend/js/jquery.scrollUp.min.js')}}"></script>

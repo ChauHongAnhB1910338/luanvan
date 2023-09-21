@@ -36,7 +36,7 @@ class HomeController extends Controller
     public function san_pham(){
         $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
         $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
-        $all_product = DB::table('tbl_product')->where('product_status','1')->orderby('product_id','desc')->paginate(6);
+        $all_product = DB::table('tbl_product')->where('product_status','1')->orderby('product_id','desc')->paginate(12);
         return view('pages.product')->with('category',$cate_product)->with('brand',$brand_product)->with('all_product',$all_product);
     }
     public function don_hang($customer_id){

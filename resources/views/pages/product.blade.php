@@ -3,7 +3,7 @@
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Tất cả sản phẩm</h2>
 						@foreach ($all_product as $key => $product)
-							<div class="col-sm-4">
+							<div class="container-fluid col-sm-3">
 								<div class="product-image-wrapper">
 									
 									<div class="single-products">
@@ -38,7 +38,10 @@
 						@endforeach
 						
 					</div><!--features_items-->
-					<div class="pagination">
-						{{ $all_product->links('pagination::bootstrap-5') }}
+					<div class="text-center">
+						<div class="pagination">
+							{{ $all_product->links('pagination::bootstrap-5') }}
+						</div>
 					</div>
+					
 @endsection

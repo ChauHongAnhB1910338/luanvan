@@ -150,6 +150,27 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<li><a href="{{URL::to('/insert-coupon')}}">Thêm mã giảm giá</a></li>
                     </ul>
                 </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-book"></i>
+                        <span>Vận chuyển</span>
+                    </a>
+                    <ul class="sub">
+						<li><a href="{{URL::to('/delivery')}}">Quản lý vận chuyển</a></li>
+                    </ul>
+                </li>
+                <hr>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-book"></i>
+                        <span>Kho hàng</span>
+                    </a>
+                    <ul class="sub">
+						<li><a href="{{URL::to('/warehouse')}}">Quản lý kho hàng</a></li>
+						<li><a href="{{URL::to('/addproduct-warehouse')}}">Nhập kho</a></li>
+                    </ul>
+                </li>
+                <hr>
                 
             </ul>            </div>
         <!-- sidebar menu end-->
@@ -172,6 +193,52 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="{{asset('public/backend/js/jquery.nicescroll.js')}}"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{{asset('public/backend/js/flot-chart/excanvas.min.js')}}"></script><![endif]-->
 <script src="{{asset('public/backend/js/jquery.scrollTo.js')}}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.add_delivery').click(function(){
+            var city = $('.city').val();
+            var province = $('.province').val();
+            var wards = $('.wards').val();
+            var fee_ship = $('.fee_ship').val();
+            var _token = $('input[name="_token"]').val();
+            // alert(city);
+            // alert(province);
+            // alert(wards);
+            // alert(fee_ship);
+            $.ajax({
+                url: "{{url('/insert-delivery')}}",
+                method: 'POST',
+                data: {city:city,province:province,_token:_token,wards:wards,fee_ship:fee_ship},
+                success:function(data){
+                    alert('Thêm phí vận chuyển thành công!');
+                }
+            });
+        });
+
+        $('.choose').on('change',function(){
+            var action = $(this).attr('id');
+            var ma_id = $(this).val();
+            var _token = $('input[name="_token"]').val();
+            var result = '';
+            // alert(action);
+            // alert(matp );
+            // alert(_token);
+            if(action=='city'){
+                result = 'province';
+            }else{
+                result = 'wards';
+            }
+            $.ajax({
+                url: "{{url('/select-delivery')}}",
+                method: 'POST',
+                data: {action:action,ma_id:ma_id,_token:_token},
+                success:function(data){
+                    $('#'+result).html(data);
+                }
+            });
+        });
+    });
+</script>
 <!-- morris JavaScript -->	
 <script>
     $(document).ready(function(){

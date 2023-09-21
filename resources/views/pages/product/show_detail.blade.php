@@ -1,5 +1,11 @@
 @extends('layout')
 @section('content')
+<div class="breadcrumbs">
+    <ol class="breadcrumb">
+      <li><a href="{{URL::to('/')}}">Trang chủ</a></li>
+      <li class="active">Chi tiết sản phẩm</li>
+    </ol>
+</div>
 @foreach ($product_details as $key => $product)
     <div class="product-details"><!--product-details-->
         <div class="col-sm-5">

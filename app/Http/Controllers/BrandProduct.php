@@ -30,18 +30,24 @@ class BrandProduct extends Controller
     }
     public function save_brand_product(Request $request){
         $this->AuthLogin();
-        $data = $request->all();
-        $brand = new Brand();
-        $brand->brand_name = $data['brand_product_name'];
-        $brand->brand_desc = $data['brand_product_desc'];
-        $brand->brand_status = $data['brand_product_status'];
-        $brand->save();
-        // $data = array();
-        // $data['brand_name'] = $request->brand_product_name;
-        // $data['brand_desc'] = $request->brand_product_desc;
-        // $data['brand_status'] = $request->brand_product_status;
-        
-        // DB::table('tbl_brand_product')->insert($data);
+        $data = array();
+        $data['brand_name'] = $request->brand_product_name;
+        $data['brand_desc'] = $request->brand_product_desc;
+        $data['brand_status'] = $request->brand_product_status;
+
+        $get_image = $request->file('brand_product_image');
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
+            $get_image->move('public/uploads/brand',$new_image);
+            $data['brand_image'] = $new_image;
+            DB::table('tbl_brand_product')->insert($data);
+            Session::put('message','Thêm thương hiệu thành công!');
+            return Redirect::to('add-brand-product');
+        }
+        $data['brand_image'] = '';
+        DB::table('tbl_brand_product')->insert($data);
         Session::put('message','Thêm thương hiệu thành công!');
         return Redirect::to('add-brand-product');
     }
@@ -65,16 +71,23 @@ class BrandProduct extends Controller
     }
     public function update_brand_product(Request $request,$brand_product_id){
         $this->AuthLogin();
-        $data = $request->all();
-        $brand = Brand::find($brand_product_id);
-        $brand->brand_name = $data['brand_product_name'];
-        $brand->brand_desc = $data['brand_product_desc'];
-        $brand->save();
-        // $data = array();
-        // $data['brand_name'] = $request->brand_product_name;
-        // $data['brand_desc'] = $request->brand_product_desc;
-        // DB::table('tbl_brand_product')->where('brand_id',$brand_product_id)->update($data);
-        Session::put('message','Cập nhật thương hiệu thành công!');
+        $data = array();
+        $data['brand_name'] = $request->brand_product_name;
+        $data['brand_desc'] = $request->brand_product_desc;
+        $get_image = $request->file('brand_product_image');
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
+            $get_image->move('public/uploads/brand',$new_image);
+            $data['brand_image'] = $new_image;
+            DB::table('tbl_brand_product')->where('brand_id',$brand_product_id)->update($data);
+            Session::put('message','Chỉnh sửa thương hiệu thành công!');
+            return Redirect::to('all-brand-product');
+        }
+        $data['brand_image'] = '';
+        DB::table('tbl_brand_product')->insert($data);
+        Session::put('message','Chỉnh sửa thương hiệu thành công!');
         return Redirect::to('all-brand-product');
     }
     public function delete_brand_product($brand_product_id){

@@ -87,6 +87,10 @@ Route::get('/delete-coupon/{coupon_id}', 'App\Http\Controllers\CouponController@
 Route::post('/insert-coupon-code', 'App\Http\Controllers\CouponController@insert_coupon_code');
 Route::get('/unset-coupon', 'App\Http\Controllers\CouponController@unset_coupon');
 
+//warehouse-admin
+Route::get('/warehouse', 'App\Http\Controllers\WarehouseController@warehouse');
+Route::get('/addproduct-warehouse', 'App\Http\Controllers\WarehouseController@addproduct_warehouse');
+
 //Check out
 Route::get('/login-checkout', 'App\Http\Controllers\CheckoutController@login_checkout');
 Route::get('/logout-checkout', 'App\Http\Controllers\CheckoutController@logout_checkout');
@@ -103,3 +107,8 @@ Route::get('/manage-order', 'App\Http\Controllers\OrderController@manage_order')
 Route::get('/view-order/{order_code}', 'App\Http\Controllers\OrderController@view_order');
 Route::post('/update-order-qty', 'App\Http\Controllers\OrderController@update_order_qty');
 Route::post('/update-qty', 'App\Http\Controllers\OrderController@update_qty');
+
+//Delivery
+Route::get('/delivery', 'App\Http\Controllers\DeliveryController@delivery');
+Route::post('/select-delivery', 'App\Http\Controllers\DeliveryController@select_delivery');
+Route::post('/insert-delivery', 'App\Http\Controllers\DeliveryController@insert_delivery');
