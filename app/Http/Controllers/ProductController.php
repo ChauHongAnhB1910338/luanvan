@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Models\Gallery;
 use App\HTTP\Requests;
+use App\Models\Comment;
 use File;
 use Session;
 use Illuminate\Support\Facades\Redirect;
@@ -156,5 +157,57 @@ class ProductController extends Controller
         ->with('product_cate_name',$product_cate_name)
         ->with('product_cate_id',$product_cate_id)
         ->with('gallery',$gallery);
+    }
+    public function load_comment(Request $request){
+        $product_id = $request->product_id;
+        $comment = Comment::where('comment_product_id',$product_id)->where('comment_status',1)->get();
+        $output = '';
+        foreach($comment as $key => $comm){
+            $output.= '
+                    <div class="row style_comment col-md-12" style="margin-top: 10px; margin-bot:10px;">
+                        <div class="col-md-1">
+                            <img width="70px" height="70px" src="'.url('/public/backend/images/1.png').'" class="img img-responsive img-thumbnail">
+                        </div>
+                        <div class="col-md-11">
+                            <p style="color: red">'.$comm->comment_name.'</p>
+                            <p style="color: green">'.$comm->comment_date.'</p>
+                            <p style="color: black">'.$comm->comment.'</p>
+                        </div>
+                    </div>
+            ';
+        }
+        echo $output;
+    }
+    public function send_comment(Request $request){
+        $product_id = $request->product_id;
+        $comment_name = $request->comment_name;
+        $comment_content = $request->comment_content;
+        $comment = new Comment();
+        $comment->comment = $comment_content;
+        $comment->comment_name = $comment_name;
+        $comment->comment_status = 0;
+        $comment->comment_product_id = $product_id;
+        $comment->save();
+    }
+    public function list_comment(){
+        $comment = Comment::with('product')->orderby('comment_status','DESC')->get();
+        return view('admin.comment.list_comment')->with(compact('comment'));
+    }
+    public function allow_comment(Request $request){
+        $data = $request->all();
+        $comment = Comment::find($data['comment_id']);
+        $comment->comment_status = $data['comment_status'];
+        $comment->save();
+    }
+    public function reply_comment(Request $request){
+        $data = $request->all();
+        $comment = new Comment();
+        $comment->comment = $data['comment'];
+        $comment->comment_product_id = $data['comment_product_id'];
+        $comment->comment_parent_comment = $data['comment_id'];
+        $comment->comment_status = 1;
+        $comment->comment_name = 'AnhChauStore';
+        $comment->save();
+        
     }
 }

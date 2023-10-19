@@ -88,18 +88,32 @@
                     <li><a href=""><i class="fa fa-clock-o"></i>12:41 AM</a></li>
                     <li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li>
                 </ul>
-                <p>Bạn cảm thấy như thế nào về sản phẩm này? Hãy bình luận cho chúng tôi biết hoặc gửi yêu cầu của bạn đến chúng tôi!</p>
-                <p><b>Viết bình luận của bạn</b></p>
+                <style>
+                    .row.style_comment{
+                        border: 1px solid #ddd;
+                        border-radius: 10px;
+                        background: #f0f0e9;
+                    }
+                </style>
+                <form>
+                    @csrf
+                    <input type="hidden" name="comment_product_id" class="comment_product_id" value="{{$product->product_id}}"> 
+                    <div id="comment_show"></div>
+                    
+                </form>
                 
+                
+            </div>
+            <div class="col-md-12" style="padding-top: 10px">
                 <form action="#">
                     <span>
-                        <input type="text" placeholder="Nhập tên của bạn"/>
-                        <input type="email" placeholder="Nhập địa chỉ email"/>
+                        <input style="width: 100%; margin-left: 0" type="text" class="comment_name" placeholder="Tên của bạn"/>
                     </span>
-                    <textarea name="" placeholder="Nhập bình luận"></textarea>
-                    <b>Đánh giá: </b> <img src="{{URL::to('/public/frontend/images/rating.png')}}" alt="" />
-                    <button type="button" class="btn btn-default pull-right">
-                        Gửi
+                    <textarea name="comment" class="comment_content" placeholder="Nhập bình luận"></textarea>
+                    <div id="notify_comment"></div>
+                    <b>Đánh giá sao: </b> <img src="{{URL::to('/public/frontend/images/rating.png')}}" alt="" />
+                    <button type="button" class="btn btn-default pull-right send-comment">
+                        Đăng bình luận
                     </button>
                 </form>
             </div>

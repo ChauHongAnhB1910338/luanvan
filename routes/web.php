@@ -140,3 +140,10 @@ Route::post('/select-gallery', 'App\Http\Controllers\GalleryController@select_ga
 Route::post('/insert-gallery/{pro_id}', 'App\Http\Controllers\GalleryController@insert_gallery');
 Route::post('/update-gallery-name', 'App\Http\Controllers\GalleryController@update_gallery_name');
 Route::post('/delete-gallery', 'App\Http\Controllers\GalleryController@delete_gallery');
+
+//Comment
+Route::post('/load-comment', 'App\Http\Controllers\ProductController@load_comment');
+Route::post('/send-comment', 'App\Http\Controllers\ProductController@send_comment');
+Route::get('/comment', 'App\Http\Controllers\ProductController@list_comment');
+Route::post('/allow-comment', 'App\Http\Controllers\ProductController@allow_comment');
+Route::post('/reply-comment', 'App\Http\Controllers\ProductController@reply_comment');

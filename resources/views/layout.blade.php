@@ -274,6 +274,42 @@
 	<script src="{{asset('public/frontend/js/prettify.js')}}"></script>
 	{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
 
+	<script>
+		$(document).ready(function(){
+			load_comment();
+			function load_comment(){
+				var product_id = $('.comment_product_id').val();
+				var _token = $('input[name="_token"]').val();
+
+				$.ajax({
+					url: "{{url('/load-comment')}}",
+					method: 'POST',
+					data: {product_id:product_id,_token:_token},
+					success:function(data){
+						$('#comment_show').html(data);
+					}
+				});
+			}
+			$('.send-comment').click(function(){
+				var product_id = $('.comment_product_id').val();
+				var comment_name = $('.comment_name').val();
+				var comment_content = $('.comment_content').val();
+				var _token = $('input[name="_token"]').val();
+				$.ajax({
+					url: "{{url('/send-comment')}}",
+					method: 'POST',
+					data: {product_id:product_id,comment_name:comment_name,comment_content:comment_content,_token:_token},
+					success:function(data){
+						load_comment();
+						$('#notify_comment').fadeOut(2000);
+						$('.comment_name').val('');
+						$('.comment_content').val('');
+					}
+				});
+			});
+		});
+	</script>
+
 	{{-- botman --}}
 	<script>
 		$(document).ready(function() {

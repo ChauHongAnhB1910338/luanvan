@@ -30,6 +30,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- //calendar -->
 
+<meta name="csrf-token" content="{{csrf_token()}}">
+
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
@@ -159,6 +161,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<li><a href="{{URL::to('/delivery')}}">Quản lý vận chuyển</a></li>
                     </ul>
                 </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-book"></i>
+                        <span>Bình luận</span>
+                    </a>
+                    <ul class="sub">
+						<li><a href="{{URL::to('/comment')}}">Quản lý bình luận</a></li>
+                    </ul>
+                </li>
                 <?php
                         $role = Session::get('admin_role');
                         if($role == '1'){
@@ -210,6 +221,50 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="{{asset('public/backend/js/jquery.nicescroll.js')}}"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{{asset('public/backend/js/flot-chart/excanvas.min.js')}}"></script><![endif]-->
 <script src="{{asset('public/backend/js/jquery.scrollTo.js')}}"></script>
+
+<script>
+    $('.comment_duyet_btn').click(function(){
+        var comment_status = $(this).data('comment_status');
+        var comment_id = $(this).data('comment_id');
+        var comment_product_id = $(this).attr('id');
+        if(comment_status==1){
+            var alert = 'Duyệt thành công';
+        }else{
+            var alert = 'Bỏ duyệt thành công';
+        }
+        $.ajax({
+            url: "{{url('/allow-comment')}}",
+            method: 'POST',
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data:{comment_status:comment_status,comment_id:comment_id,comment_product_id:comment_product_id},
+            success:function(data){
+                location.reload();
+                $('#notify_comment').html('<span class="text text-alert">'+alert+'</span>')
+            }
+        });
+    });
+    
+    $('.btn-reply-comment').click(function(){
+        var comment_id = $(this).data('comment_id');
+        var comment = $('.reply_comment_'+comment_id).val();
+        var comment_product_id = $(this).data('product_id');
+
+        $.ajax({
+            url: "{{url('/reply-comment')}}",
+            method: 'POST',
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data:{comment:comment,comment_id:comment_id,comment_product_id:comment_product_id},
+            success:function(data){
+                $('.reply_comment_'+comment_id).val('');
+                $('#notify_comment').html('<span class="text text-alert">Đã phản hồi bình luận</span>');
+            }
+        });
+    });
+</script>
 
 <script type="text/javascript">
     $(document).ready(function(){
