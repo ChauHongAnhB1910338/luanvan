@@ -78,7 +78,10 @@
                 <h4>Tổng số tiền được giảm: {{number_format($discount)}}đ</h4>
             </div>
             <div class="text-center">
-                <h4>Tổng số tiền thanh toán: {{number_format($final_total-$discount)}}đ</h4>
+                <h4>Phí vận chuyển: {{number_format($cus->product_feeship)}}đ</h4>
+            </div>
+            <div class="text-center">
+                <h4>Tổng số tiền thanh toán: {{number_format($final_total-$discount+$cus->product_feeship)}}đ</h4>
             </div>
         </div>
     </div>

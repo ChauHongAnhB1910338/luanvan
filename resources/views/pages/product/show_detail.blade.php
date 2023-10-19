@@ -1,17 +1,32 @@
 @extends('layout')
 @section('content')
-<div class="breadcrumbs">
+<nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li><a href="{{URL::to('/')}}">Trang chủ</a></li>
-      <li class="active">Chi tiết sản phẩm</li>
+      <li class="breadcrumb-item"><a href="{{URL::to('/')}}">Trang chủ</a></li>
+      <li class="breadcrumb-item"><a href="{{URL::to('/danh-muc-san-pham').'/'.$product_cate_id}}">{{$product_cate_name}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{$product_name}}</li>
     </ol>
-</div>
+  </nav>
+<style>
+    .lSSlideOuter .lSPager.lSGallery img {
+        display: block;
+        height: 140px;
+        max-width: 100%;
+    }
+    li.active{
+        border: 2px solid #d1350a;
+    }
+</style>
 @foreach ($product_details as $key => $product)
     <div class="product-details"><!--product-details-->
         <div class="col-sm-5">
-            <div class="view-product">
-                <img src="{{URL::to('/public/uploads/product/'.$product->product_image)}}" alt="" />
-            </div>
+            <ul id="imageGallery">
+                @foreach ($gallery as $gal)
+                    <li data-thumb="{{URL::to('/public/uploads/gallery/'.$gal->gallery_image)}}" data-src="{{URL::to('/public/uploads/gallery/'.$gal->gallery_image)}}">
+                        <img width="100%" alt="{{$gal->gallery_name}}" src="{{URL::to('/public/uploads/gallery/'.$gal->gallery_image)}}" />
+                    </li>        
+                @endforeach
+              </ul>
 
         </div>
         <div class="col-sm-7">

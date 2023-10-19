@@ -96,6 +96,7 @@
               <th>Giá bán</th>
               <th>Giá gốc</th>
               <th>Mã giảm giá</th>
+              <th>Phí vận chuyển</th>
               <th>Tổng tiền</th>
               <th style="width:30px;"></th>
             </tr>
@@ -135,6 +136,7 @@
                     Không sử dụng
                 @endif
               </td>
+              <td>{{number_format($details->product_feeship)}} VNĐ</td>
               <td>{{number_format($subtotal)}} VNĐ</td>
               @php
                   $tong+=$subtotal;
@@ -164,7 +166,10 @@
                     @endphp
                 @endif
                 <br>
-                Tổng thanh toán: {{number_format($total_coupon)}} VNĐ 
+                Phí vận chuyển: {{number_format($details->product_feeship)}} VNĐ
+
+                <br>
+                Tổng thanh toán: {{number_format($total_coupon+$details->product_feeship)}} VNĐ 
               </td>
             </tr>
             <tr>

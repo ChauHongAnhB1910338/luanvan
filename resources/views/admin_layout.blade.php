@@ -159,7 +159,25 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<li><a href="{{URL::to('/delivery')}}">Quản lý vận chuyển</a></li>
                     </ul>
                 </li>
-                <hr>
+                <?php
+                        $role = Session::get('admin_role');
+                        if($role == '1'){
+                ?>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span>Nhân viên</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{{URL::to('/add-users')}}">Thêm nhân viên</a></li>
+                            <li><a href="{{URL::to('/users')}}">Quản lý nhân viên</a></li>
+                        
+                        </ul>
+                    </li>
+                <?php
+                        }
+                ?>
+                
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-book"></i>
@@ -170,7 +188,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<li><a href="{{URL::to('/addproduct-warehouse')}}">Nhập kho</a></li>
                     </ul>
                 </li>
-                <hr>
                 
             </ul>            </div>
         <!-- sidebar menu end-->
@@ -193,8 +210,107 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="{{asset('public/backend/js/jquery.nicescroll.js')}}"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{{asset('public/backend/js/flot-chart/excanvas.min.js')}}"></script><![endif]-->
 <script src="{{asset('public/backend/js/jquery.scrollTo.js')}}"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
+        load_gallery();
+
+        function load_gallery(){
+            var pro_id = $('.pro_id').val();
+            var _token = $('input[name="_token"]').val();
+            // alert(pro_id);
+            $.ajax({
+                url: "{{url('/select-gallery')}}",
+                method: 'POST',
+                data:{pro_id:pro_id,_token:_token},
+                success:function(data){
+                    $('#load_gallery').html(data);
+                }
+            });
+        }
+
+        $('#file').change(function(){
+            var error = '';
+            var files = $('#file')[0].files;
+
+            if(files.length>5){
+                error+='<p>Không được chọn quá 5 ảnh</p>'
+            }else if(files.length==''){
+                error+='<p>Không được bỏ trống</p>'
+            }else if(files.size > 2000000){
+                error+='<p>Không được lớn hơn 2Mb</p>'
+            }
+
+            if(error==''){
+
+            }else{
+                $('#file').val('');
+                $('#error_gallery').html('<span class="text-danger">'+error+'</span>');
+                return false;
+            }
+        });
+
+        $(document).on('blur','.edit_gal_name',function(){
+            var gal_id = $(this).data('gal_id');
+            var gal_text = $(this).text();
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{url('/update-gallery-name')}}",
+                method: 'POST',
+                data:{gal_id:gal_id,gal_text:gal_text,_token:_token},
+                success:function(data){
+                    load_gallery();
+                    $('#error_gallery').html('<span class="text-danger">Cập nhật tên hình ảnh thành công</span>');
+                }
+            });
+        });
+
+        $(document).on('click','.delete-gallery',function(){
+            var gal_id = $(this).data('gal_id');
+            var _token = $('input[name="_token"]').val();
+            if(confirm('Bạn chắc chắn muốn xóa hình ảnh này khỏi sản phẩm?')){
+                $.ajax({
+                    url: "{{url('/delete-gallery')}}",
+                    method: 'POST',
+                    data:{gal_id:gal_id,_token:_token},
+                    success:function(data){
+                        load_gallery();
+                        $('#error_gallery').html('<span class="text-danger">Xóa hình ảnh thành công</span>');
+                    }
+                });
+            }
+            
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        fetch_delivery();
+        function fetch_delivery(){
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{url('/select-feeship')}}",
+                method: 'POST',
+                data: {_token:_token},
+                success:function(data){
+                    $('#load_delivery').html(data);
+                }
+            });
+        }
+        $(document).on('blur','.fee_feeship_edit',function(){
+            var feeship_id = $(this).data('feeship_id');
+            var fee_value = $(this).text();
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "{{url('/update-feeship')}}",
+                method: 'POST',
+                data: {feeship_id:feeship_id,fee_value:fee_value,_token:_token},
+                success:function(data){
+                    alert('Thay đổi phí vận chuyển thành công!');
+                    fetch_delivery(); // Tự động load csdl ko cần tự load
+                }
+            });
+        });
         $('.add_delivery').click(function(){
             var city = $('.city').val();
             var province = $('.province').val();
@@ -211,6 +327,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 data: {city:city,province:province,_token:_token,wards:wards,fee_ship:fee_ship},
                 success:function(data){
                     alert('Thêm phí vận chuyển thành công!');
+                    fetch_delivery();
                 }
             });
         });

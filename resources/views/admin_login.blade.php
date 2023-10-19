@@ -34,12 +34,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			{{csrf_field()}}
 			<input type="text" class="ggg" name="admin_email" placeholder="Nhập vào email của bạn" required="">
 			<input type="password" class="ggg" name="admin_password" placeholder="Nhập vào mật khẩu của bạn" required="">
-			<span><input type="checkbox" />Remember Me</span>
-			<h6><a href="#">Forgot Password?</a></h6>
-				<div class="clearfix"></div>
-				<input type="submit" value="Sign In" name="login">
+			<input type="submit" value="Sign In" name="login">
 		</form>
-		<p>Don't Have an Account ?<a href="registration.html">Create an account</a></p>
 	<?php
 		$message = Session::get('message');
 		if($message){

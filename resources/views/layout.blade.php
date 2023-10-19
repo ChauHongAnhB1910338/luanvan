@@ -14,6 +14,9 @@
 	<link href="{{asset('public/frontend/css/main.css')}}" rel="stylesheet">
 	<link href="{{asset('public/frontend/css/responsive.css')}}" rel="stylesheet">
 	<link href="{{asset('public/frontend/css/sweetalert.css')}}" rel="stylesheet">
+	<link href="{{asset('public/frontend/css/lightgallery.min.css')}}" rel="stylesheet">
+	<link href="{{asset('public/frontend/css/lightslider.css')}}" rel="stylesheet">
+	<link href="{{asset('public/frontend/css/prettify.css')}}" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -22,6 +25,11 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{asset('images/ico/apple-touch-icon-114-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{asset('images/ico/apple-touch-icon-72-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" href="{{asset('images/ico/apple-touch-icon-57-precomposed.png')}}">
+
+	{{-- botman --}}
+	<link type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+
+
 </head><!--/head-->
 
 <body>
@@ -261,7 +269,39 @@
     <script src="{{asset('public/frontend/js/jquery.prettyPhoto.js')}}"></script>
     <script src="{{asset('public/frontend/js/main.js')}}"></script>
 	<script src="{{asset('public/frontend/js/sweetalert.min.js')}}"></script>
+	<script src="{{asset('public/frontend/js/lightgallery-all.min.js')}}"></script>
+	<script src="{{asset('public/frontend/js/lightslider.js')}}"></script>
+	<script src="{{asset('public/frontend/js/prettify.js')}}"></script>
 	{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+
+	{{-- botman --}}
+	<script>
+		$(document).ready(function() {
+			$('#imageGallery').lightSlider({
+				gallery:true,
+				item:1,
+				loop:true,
+				thumbItem:3,
+				slideMargin:0,
+				enableDrag: false,
+				currentPagerPosition:'left',
+				onSliderLoad: function(el) {
+					el.lightGallery({
+						selector: '#imageGallery .lslide'
+					});
+				}   
+			});  
+		});
+	</script>
+
+    <script>
+        var botmanWidget = {
+            aboutText: 'Start the conversation with Hi',
+            introMessage: "WELCOME TO ALL ABOUT LARAVEL"
+        };
+    </script>
+   
+    <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 	<script>
 		$(document).ready(function(){
 			$('.send_order').click(function(){
@@ -286,9 +326,10 @@
 						var shipping_notes = $('.shipping_notes').val().trim();
 						var shipping_method = $('.payment_select').val().trim();
 						var order_coupon = $('.order_coupon' ).val().trim();
+						var feeship = $('.feeship' ).val().trim();
 						var _token = $('input[name="_token"]').val().trim();
 						// Kiểm tra các giá trị nhập liệu có hợp lệ không
-						if (shipping_name == "" || shipping_email == "" || shipping_address == "" || shipping_phone == "") {
+						if (shipping_name == "" || shipping_email == "" || shipping_address == "" || shipping_phone == "" || shipping_notes == "" || shipping_method == "" || feeship == "") {
 							// Hiển thị thông báo lỗi nếu thiếu thông tin bắt buộc
 							alert("Vui lòng nhập đầy đủ thông tin giao hàng.");
 							return;
@@ -312,8 +353,10 @@
 							'shipping_notes': shipping_notes,
 							'shipping_method': shipping_method,
 							'order_coupon': order_coupon,
+							'feeship': feeship,
 							'_token': _token},
 						});
+						console.log(feeship);
 						swal("Đặt hàng thành công!","Chúng tôi sẽ sớm liên hệ với bạn!","success");
 
 						window.setTimeout(function(){
@@ -370,6 +413,58 @@
 					})
 				}
 				
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$('.choose').on('change',function(){
+            var action = $(this).attr('id');
+            var ma_id = $(this).val();
+            var _token = $('input[name="_token"]').val();
+            var result = '';
+            // alert(action);
+            // alert(matp );
+            // alert(_token);
+            if(action=='city'){
+                result = 'province';
+            }else{
+                result = 'wards';
+            }
+            $.ajax({
+                url: "{{url('/select-delivery-home')}}",
+                method: 'POST',
+                data: {action:action,ma_id:ma_id,_token:_token},
+                success:function(data){
+                    $('#'+result).html(data);
+                }
+            });
+        	});
+		});
+	</script>
+	<script type="text/javascript"> 
+		$(document).ready(function(){
+			$('.calculate_delivery').click(function(){
+				var matp = $('.city').val();
+				var maqh = $('.province').val();
+				var xaid = $('.wards').val();
+				var _token = $('input[name="_token"]').val();
+				// alert(matp);
+				// alert(maqh);
+				// alert(xaid);
+				// alert(_token);
+				if(matp == '' || maqh == '' || xaid == ''){
+					alert('Làm ơn chọn để tính phí vận chuyển');
+				}else{
+					$.ajax({
+						url: "{{url('/calculate-fee')}}",
+						method: 'POST',
+						data:{matp:matp,maqh:maqh,xaid:xaid,_token:_token},
+						success:function(data){
+							location.reload();
+						}
+					});
+				}
 			});
 		});
 	</script>

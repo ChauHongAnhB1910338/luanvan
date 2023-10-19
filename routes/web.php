@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\BotManController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::match(['get', 'post'], '/botman', 'App\Http\Controllers\BotManController@handle');
 
 Route::get('/', 'App\Http\Controllers\HomeController@index');
 Route::get('/trangchu', 'App\Http\Controllers\HomeController@index');
@@ -101,6 +103,9 @@ Route::get('/checkout', 'App\Http\Controllers\CheckoutController@checkout');
 Route::get('/payment', 'App\Http\Controllers\CheckoutController@payment');
 Route::post('/save-checkout-customer', 'App\Http\Controllers\CheckoutController@save_checkout_customer');
 Route::post('/confirm-order', 'App\Http\Controllers\CheckoutController@confirm_order');
+Route::post('/select-delivery-home', 'App\Http\Controllers\CheckoutController@select_delivery_home');
+Route::post('/calculate-fee', 'App\Http\Controllers\CheckoutController@calculate_fee');
+Route::get('/del-fee', 'App\Http\Controllers\CheckoutController@del_fee');
 //Order
 Route::get('/manage-order', 'App\Http\Controllers\OrderController@manage_order');
 // Route::get('/manage-order', 'App\Http\Controllers\CheckoutController@manage_order');
@@ -112,3 +117,26 @@ Route::post('/update-qty', 'App\Http\Controllers\OrderController@update_qty');
 Route::get('/delivery', 'App\Http\Controllers\DeliveryController@delivery');
 Route::post('/select-delivery', 'App\Http\Controllers\DeliveryController@select_delivery');
 Route::post('/insert-delivery', 'App\Http\Controllers\DeliveryController@insert_delivery');
+Route::post('/select-feeship', 'App\Http\Controllers\DeliveryController@select_feeship');
+Route::post('/update-feeship', 'App\Http\Controllers\DeliveryController@update_feeship');
+
+
+//Role
+Route::get('users',
+		[
+			'uses'=>'App\Http\Controllers\UserController@index',
+			'as'=> 'Users',
+			// 'middleware'=> 'roles'
+			// 'roles' => ['admin','author']
+		]);
+Route::get('add-users','App\Http\Controllers\UserController@add_users');
+Route::get('delete-user-roles/{admin_id}','App\Http\Controllers\UserController@delete_user_roles');
+Route::post('store-users','App\Http\Controllers\UserController@store_users');
+Route::post('assign-roles','App\Http\Controllers\UserController@assign_roles');
+
+//Gallery
+Route::get('/add-gallery/{product_id}', 'App\Http\Controllers\GalleryController@add_gallery');
+Route::post('/select-gallery', 'App\Http\Controllers\GalleryController@select_gallery');
+Route::post('/insert-gallery/{pro_id}', 'App\Http\Controllers\GalleryController@insert_gallery');
+Route::post('/update-gallery-name', 'App\Http\Controllers\GalleryController@update_gallery_name');
+Route::post('/delete-gallery', 'App\Http\Controllers\GalleryController@delete_gallery');

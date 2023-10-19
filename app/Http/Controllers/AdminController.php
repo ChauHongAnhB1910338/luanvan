@@ -15,7 +15,8 @@ class AdminController extends Controller
 {
     public function AuthLogin(){
         $admin_id = Session::get('admin_id');
-        if($admin_id){
+        $admin_role = Session::get('admin_role');
+        if($admin_id ){
             return Redirect::to('dashboard');
         } else return Redirect::to('admin')->send();
     }
@@ -34,6 +35,7 @@ class AdminController extends Controller
         if($result){
             Session::put('admin_name',$result->admin_name);
             Session::put('admin_id',$result->admin_id);
+            Session::put('admin_role',$result->admin_role);
             return Redirect::to('/dashboard');
         } else {
             Session::put('message','Sai tài khoản hoặc mật khẩu!');
@@ -44,6 +46,7 @@ class AdminController extends Controller
         $this->AuthLogin();
         Session::put('admin_id',NULL);
         Session::put('admin_name',NULL);
+        Session::put('admin_role',NULL);
         return Redirect::to('/admin');
        
     }

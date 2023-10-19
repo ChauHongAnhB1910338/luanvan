@@ -94,10 +94,14 @@
                         </td>
                         <td></td>
                         <td>
-                             <li>Tổng: <span>{{number_format($total)}} VNĐ</span></li>
+                            <li>Tổng: <span>{{number_format($total)}} VNĐ</span></li>
+                            <li>Phí vận chuyển: <span>{{number_format(Session::get('fee'))}} VNĐ</span>
+                                @if(Session::get('fee'))
+                                    <a class="feeship_delete" href="{{url('/del-fee')}}"><i class="fa fa-times"></i></a>
+                                @endif
+                            </li>
                             @if (Session::get('coupon'))
-                            <li>
-                                
+                                <li>
                                     @foreach (Session::get('coupon') as $key => $cou)
                                         @if ($cou['coupon_condition']==1)
                                             Mã giảm giá: {{$cou['coupon_number']}}%
@@ -109,7 +113,7 @@
                                             </p>
                                             <p>
                                                 <li>Tổng tiền phải trả: 
-                                                    {{number_format($total-$total_coupon)}} VNĐ
+                                                    {{number_format($total-$total_coupon+Session::get('fee'))}} VNĐ
                                                 </li>
                                             </p>
                                         @else
@@ -120,12 +124,14 @@
                                                 @endphp
                                             </p>
                                             <p><li>Tổng tiền phải trả: 
-                                                {{number_format($total_coupon)}} VNĐ
+                                                {{number_format($total_coupon+Session::get('fee'))}} VNĐ
                                             </li></p>
                                         @endif
                                     @endforeach
-                                @else
-                                    
+                            @else
+                                <p><li>Tổng tiền phải trả: 
+                                    {{number_format($total+Session::get('fee'))}} VNĐ
+                                </li></p>
                                 
                             </li>
                             @endif
@@ -148,17 +154,46 @@
             </form>
             @if (Session::get('cart'))
                 <tr>
-                <td>
-                
-                <form action="{{url('/check-coupon')}}" method="POST">
-                   @csrf 
-                    <input type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
+                    <td>
                     
-                    <input type="submit" class="btn btn-default check_coupon" name="check_coupon" value="Tính mã giảm giá">
-                </form>
-                                    
-                </td> 
-            </tr>
+                    <form action="{{url('/check-coupon')}}" method="POST">
+                    @csrf 
+                        <input type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
+                        
+                        <input type="submit" class="btn btn-default check_coupon" name="check_coupon" value="Tính mã giảm giá">
+                    </form>
+                                        
+                    </td> 
+                    <td>
+                        <h4> Chọn địa chỉ để tính phí vận chuyển</h4>
+                        <form>
+                            {{csrf_field()}}
+                            <div class="form-group">
+                                <label for="ex">Chọn thành phố</label>
+                                <select name="city" id="city" class="form-control input-sm m-bot15 choose city">
+                                    <option value="">Chọn tỉnh thành phố</option>
+                                        @foreach ($city as $key => $ci)
+                                            <option value="{{$ci->matp}}"> {{$ci->name_city}} </option>
+                                        @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ex">Chọn quận huyện</label>
+                                <select name="province" id="province" class="form-control input-sm m-bot15 choose province">
+                                    <option value="">--Chọn quận huyện--</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ex">Chọn xã phường thị trấn</label>
+                                <select name="wards" id="wards" class="form-control input-sm m-bot15 wards">
+                                    <option value="">--Chọn xã phường thị trấn--</option>
+                                </select>
+                            </div>
+                            <input type="button" class="btn btn-primary btn-sm calculate_delivery" name="calculate_order" value="Tính phí vận chuyển">
+                        </form>
+                        
+                    </td>
+                </tr>
             @endif
             
             
@@ -174,10 +209,14 @@
                                 @csrf
                                 <input type="text" name="shipping_email" class="shipping_email" placeholder="Email*">
                                 <input type="text" name="shipping_name" class="shipping_name" placeholder="Họ và tên">
-                                <input type="text" name="shipping_address" class="shipping_address" placeholder="Địa chỉ">
+                                <input type="text" name="shipping_address" class="shipping_address" placeholder="Địa chỉ cụ thể">
                                 <input type="text" name="shipping_phone" class="shipping_phone" placeholder="Số điện thoại">
                                 <textarea name="shipping_notes" class="shipping_notes" placeholder="Ghi chú kèm theo" rows="5"></textarea>
-                                
+                                @if (Session::get('fee'))
+                                    <input type="hidden" name="feeship" class="feeship" value="{{Session::get('fee')}}">
+                                @else
+                                    <input type="hidden" name="feeship" class="feeship" value="30000">
+                                @endif
                                 @if (Session::get('coupon'))
                                     @foreach (Session::get('coupon') as $key => $cou)
                                         <input type="hidden" name="order_coupon" class="order_coupon" value="{{$cou['coupon_code']}}">
