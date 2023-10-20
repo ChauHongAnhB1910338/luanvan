@@ -111,7 +111,19 @@
                     </span>
                     <textarea name="comment" class="comment_content" placeholder="Nhập bình luận"></textarea>
                     <div id="notify_comment"></div>
-                    <b>Đánh giá sao: </b> <img src="{{URL::to('/public/frontend/images/rating.png')}}" alt="" />
+                    <ul class="list-inline" title="Average Rating">
+                        @for ($count=1; $count <= 5; $count++)
+                            @php
+                                if ($count <= $rating) {
+                                    $color = 'color:#ffcc00;';
+                                } else {
+                                    $color = 'color:#ccc;';
+                                }
+                                
+                            @endphp
+                            <li title="Đánh giá sao" id="{{$product->product_id}}-{{$count}}" data-index="{{$count}}" data-product_id="{{$product->product_id}}" data-rating="{{$rating}}" class="rating" style="cursor: pointer;{{$color}};font-size:30px">&#9733;</li>
+                        @endfor
+                    </ul>
                     <button type="button" class="btn btn-default pull-right send-comment">
                         Đăng bình luận
                     </button>

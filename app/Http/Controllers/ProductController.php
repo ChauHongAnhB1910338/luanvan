@@ -7,6 +7,7 @@ use DB;
 use App\Models\Gallery;
 use App\HTTP\Requests;
 use App\Models\Comment;
+use App\Models\Rating;
 use File;
 use Session;
 use Illuminate\Support\Facades\Redirect;
@@ -148,6 +149,10 @@ class ProductController extends Controller
         ->join('tbl_category_product','tbl_category_product.category_id','=','tbl_product.category_id')
         ->join('tbl_brand_product','tbl_brand_product.brand_id','=','tbl_product.brand_id')
         ->where('tbl_category_product.category_id',$category_id)->whereNotIn('tbl_product.product_id',[$product_id])->get();
+        //rating
+        $rating = Rating::where('product_id',$product_id)->avg('rating');
+        $rating = round($rating);
+
         return view('pages.product.show_detail')
         ->with('category',$cate_product)
         ->with('brand',$brand_product)
@@ -156,11 +161,14 @@ class ProductController extends Controller
         ->with('relate',$related_product)
         ->with('product_cate_name',$product_cate_name)
         ->with('product_cate_id',$product_cate_id)
-        ->with('gallery',$gallery);
+        ->with('gallery',$gallery)
+        ->with('rating',$rating)
+        ;
     }
     public function load_comment(Request $request){
         $product_id = $request->product_id;
-        $comment = Comment::where('comment_product_id',$product_id)->where('comment_status',1)->get();
+        $comment = Comment::where('comment_product_id',$product_id)->where('comment_status',1)->where('comment_parent_comment','=',NULL)->get();
+        $comment_rep = Comment::with('product')->where('comment_parent_comment','>',0)->orderby('comment_id','DESC')->get();
         $output = '';
         foreach($comment as $key => $comm){
             $output.= '
@@ -169,12 +177,34 @@ class ProductController extends Controller
                             <img width="70px" height="70px" src="'.url('/public/backend/images/1.png').'" class="img img-responsive img-thumbnail">
                         </div>
                         <div class="col-md-11">
-                            <p style="color: red">'.$comm->comment_name.'</p>
+                            <p style="color: blue">@'.$comm->comment_name.'</p>
                             <p style="color: green">'.$comm->comment_date.'</p>
                             <p style="color: black">'.$comm->comment.'</p>
                         </div>
                     </div>
-            ';
+                    ';
+            foreach($comment_rep as $key => $rep_comment){
+                if($rep_comment->comment_parent_comment == $comm->comment_id){
+                    $output.= '
+                            <div class="col-md-12">
+                                <div class="row style_comment col-md-11" style="margin-top: 10px; margin-bot:10px; margin-left: 40px; margin-right: 20px">
+                                    <div class="col-md-1">
+                                        <img width="70px" height="70px" src="'.url('/public/frontend/images/hotro.jpg').'" class="img img-responsive img-thumbnail">
+                                    </div>
+                                    <div class="col-md-11">
+                                        <p style="color: red">@Admin</p>
+                                        <p style="color: green">'.$rep_comment->comment_date.'</p>
+                                        <p style="color: black">'.$rep_comment->comment.'</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                            </div>
+
+                    ';
+                }
+            }
+            
         }
         echo $output;
     }
@@ -187,11 +217,13 @@ class ProductController extends Controller
         $comment->comment_name = $comment_name;
         $comment->comment_status = 0;
         $comment->comment_product_id = $product_id;
+        $comment->comment_parent_comment = NULL;
         $comment->save();
     }
     public function list_comment(){
-        $comment = Comment::with('product')->orderby('comment_status','DESC')->get();
-        return view('admin.comment.list_comment')->with(compact('comment'));
+        $comment = Comment::with('product')->where('comment_parent_comment','=',NULL)->orderby('comment_id','DESC')->get();
+        $comment_rep = Comment::with('product')->where('comment_parent_comment','>',0)->orderby('comment_id','DESC')->get();
+        return view('admin.comment.list_comment')->with(compact('comment','comment_rep'));
     }
     public function allow_comment(Request $request){
         $data = $request->all();
@@ -209,5 +241,13 @@ class ProductController extends Controller
         $comment->comment_name = 'AnhChauStore';
         $comment->save();
         
+    }
+    public function insert_rating(Request $request){
+        $data = $request->all();
+        $rating = new Rating();
+        $rating->product_id = $data['product_id'];
+        $rating->rating = $data['index'];
+        $rating->save();
+        echo 'done';
     }
 }

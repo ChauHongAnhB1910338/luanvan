@@ -61,6 +61,22 @@
             <td>{{ $count }}</td>
             <td>{{ $comm->comment_name }}</td>
             <td>{{ $comm->comment }}
+            <style>
+              ul.list_rep li{
+                list-style-type: decimal;
+                color: blue;
+                margin: 5px 40px;
+              }
+            </style>
+              <ul class="list_rep">
+                @foreach ($comment_rep as $key => $comm_reply)
+                  @if ($comm_reply->comment_parent_comment == $comm->comment_id)
+                      <li>{{$comm_reply->comment}}</li>
+                  @endif
+                
+                    
+                @endforeach
+              </ul>
                 <?php 
                 if ($comm->comment_status==1){
                 ?>

@@ -147,3 +147,6 @@ Route::post('/send-comment', 'App\Http\Controllers\ProductController@send_commen
 Route::get('/comment', 'App\Http\Controllers\ProductController@list_comment');
 Route::post('/allow-comment', 'App\Http\Controllers\ProductController@allow_comment');
 Route::post('/reply-comment', 'App\Http\Controllers\ProductController@reply_comment');
+
+//Rating
+Route::post('/insert-rating', 'App\Http\Controllers\ProductController@insert_rating');
