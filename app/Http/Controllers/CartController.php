@@ -136,7 +136,7 @@ class CartController extends Controller
             $message = '';
             foreach($data['cart_qty'] as $key => $qty){
                 foreach($cart as $session => $val){
-                    if($val['session_id'] == $key && $qty<$cart[$session]['product_quantity']){
+                    if($val['session_id'] == $key && $qty<=$cart[$session]['product_quantity']){
                         $cart[$session]['product_qty'] = $qty;
                         $message.='<p style="color:blue;">Cập nhật số lượng sản phẩm '.$cart[$session]['product_name'].' thành công</p>';
                     }elseif($val['session_id'] == $key && $qty>$cart[$session]['product_quantity']){

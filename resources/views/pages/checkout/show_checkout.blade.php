@@ -87,6 +87,7 @@
                             <td><input type="submit" value="Cập nhật giỏ hàng" name="update_qty" class="check_out btn btn-default btn-sm"></td>
                         </tr>
                         <td><a class="btn btn-default check_out" href="{{url('/del-all-product')}}">Xóa tất cả</a></td>
+
                         <td>
                             @if (Session::get('coupon'))
                                 <a class="btn btn-default check_out" href="{{url('/unset-coupon')}}">Xóa mã giảm giá</a>
@@ -138,7 +139,6 @@
                             {{-- <li>Phí vận chuyển: <span>Free</span></li>
                             <li>Thành tiền: <span></span></li> --}}
                         </td>
-                                                
                     @else
                     <tr>
                         <td colspan="5"><center>
@@ -192,6 +192,20 @@
                             <input type="button" class="btn btn-primary btn-sm calculate_delivery" name="calculate_order" value="Tính phí vận chuyển">
                         </form>
                         
+                    </td>
+                    <td>
+                        <form action="{{url('/vnpay-payment')}}" method="POST">
+                            @csrf
+                            <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_vnpay" class="form-control">
+                            
+                            <button type="submit" class="btn btn-default check_out" name="redirect" >Thanh toán VNPay</button>
+                        </form>
+                        <form action="{{url('/momo-payment')}}" method="POST">
+                            @csrf
+                            <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_momo" class="form-control">
+                            
+                            <button type="submit" class="btn btn-default check_out" name="payUrl" >Thanh toán MOMO</button>
+                        </form>
                     </td>
                 </tr>
             @endif

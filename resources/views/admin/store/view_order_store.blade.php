@@ -4,46 +4,16 @@
     $tong = 0;
 @endphp
 <div class="table-agile-info">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      Thông tin người mua hàng
-    </div>
-    <div class="table-responsive">
-      <table class="table table-striped b-t b-light">
-        <thead>
-          <tr>
-            <th>Tên khách hàng</th>
-            <th>Số điện thoại</th>
-            <th>Email</th>
-            <th style="width:30px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <tr>
-            <td>{{$customer->customer_name}}</td>
-            <td>{{$customer->customer_phone}}</td>
-            <td>{{$customer->customer_email}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<br>
-<div class="table-agile-info">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Thông tin vận chuyển
+        Thông tin khách hàng
       </div>
       <div class="table-responsive">
         <table class="table table-striped b-t b-light">
           <thead>
             <tr>
               <th>Tên người nhận</th>
-              <th>Địa chỉ</th>
               <th>Số điện thoại</th>
-              <th>Email</th>
               <th>Ghi chú</th>
               <th>Hình thức thanh toán</th>
               <th style="width:30px;"></th>
@@ -53,15 +23,15 @@
   
             <tr>
               <td>{{$shipping->shipping_name}}</td>
-              <td>{{$shipping->shipping_address}}</td>
               <td>{{$shipping->shipping_phone}}</td>
-              <td>{{$shipping->shipping_email}}</td>
               <td>{{$shipping->shipping_notes}}</td>
               <td>
                 @if ($shipping->shipping_method==0)
-                    Chuyển khoản
-                @else 
-                    Thanh toán khi nhận hàng
+                  Chuyển khoản
+                @elseif($shipping->shipping_method==4)
+                  Trả tiền mặt tại cửa hàng
+                @else
+                  Chưa chọn
                 @endif
               </td>
             </tr>
@@ -91,8 +61,7 @@
                 STT
               </th>
               <th>Tên sản phẩm</th>
-              <th>Số lượng trong kho</th>
-              <th>Số lượng đặt</th>
+              <th>Số lượng</th>
               <th>Giá bán</th>
               <th>Giá gốc</th>
               <th>Mã giảm giá</th>
@@ -116,16 +85,11 @@
                 
               <td><i>{{$i}}</i></td>
               <td>{{$details->product_name}}</td>
-              <td>{{$details->product->product_quantity}}</td>
-              <td>
-                <input type="number" min="1" {{$order_status==2 || $order_status==3 ? 'disabled' : ''}} class="order_qty_{{$details->product_id}}" value="{{$details->product_sales_quantity}}" name="product_sales_quantity">
+              <td >
+                <input type="number" {{$order_status!=999 ? 'disabled' : ''}} class="order_qty_{{$details->product_id}}" value="{{$details->product_sales_quantity}}" name="product_sales_quantity">
                 <input type="hidden" name="order_qty_storage" class="order_qty_storage_{{$details->product_id}}" value="{{$details->product->product_quantity}}">
                 <input type="hidden" name="order_code" class="order_code" value="{{$details->order_code}}">
                 <input type="hidden" name="order_product_id" class="order_product_id" value="{{$details->product_id}}">
-                @if ($order_status==1)
-                 <button class="btn btn-default update_quantity_order" data-product_id="{{$details->product_id}}" name="update_quantity_order" >Cập nhật</button>
-   
-                @endif
               </td>
               <td>{{number_format($details->product_price)}} VNĐ</td>
               <td>{{number_format($details->product->price_cost)}} VNĐ</td>
@@ -171,61 +135,26 @@
                 <br>
                 Tổng thanh toán: {{number_format($total_coupon+$details->product_feeship)}} VNĐ 
               </td>
-            </tr>
-            <tr>
               <td colspan="6">
                 @foreach ($order as $key => $or)
                     @if ($or->order_status == 1)
                         <form >
                           @csrf
                           <select class="form-control order_details">
-                            <option id="{{$or->order_id}}" selected value="1">Chưa xử lý</option>
-                            <option id="{{$or->order_id}}" value="4">Đã duyệt đơn(Người bán đang chuẩn bị hàng)</option>
-                            <option id="{{$or->order_id}}" value="5">Đang vận chuyển</option>
-                            <option id="{{$or->order_id}}" value="6">Đang chờ người nhận nhận hàng</option>
+                            <option id="{{$or->order_id}}" selected value="1">Vừa lên đơn</option>
                             <option id="{{$or->order_id}}" value="2">Đã hoàn thành</option>
-                            <option id="{{$or->order_id}}" value="3">Hủy đơn</option>
+                            <option id="{{$or->order_id}}" value="3">Hoàn đơn</option>
                           </select>
                         </form>
                     @elseif($or->order_status == 2)
                       <form >
                         @csrf
-                        <input id="{{$or->order_id}}" disabled selected value="Đã giao hàng">
+                        <input id="{{$or->order_id}}" disabled selected value="Đã hoàn thành">
                       </form>
-                    @elseif($or->order_status == 3)
-                    <form >
-                      @csrf
-                        <input id="{{$or->order_id}}" disabled selected value="Đã hủy đơn">
-                    </form>
-                    @elseif($or->order_status == 4)
-                    <form >
-                      @csrf
-                      <select class="form-control order_details">
-                        <option id="{{$or->order_id}}" selected value="4">Đã duyệt đơn(Người bán đang chuẩn bị hàng)</option>
-                        <option id="{{$or->order_id}}" value="5">Đang vận chuyển</option>
-                        <option id="{{$or->order_id}}" value="6">Đang chờ người nhận nhận hàng</option>
-                        <option id="{{$or->order_id}}" value="2">Đã hoàn thành</option>
-                        <option id="{{$or->order_id}}" value="3">Hủy đơn</option>
-                      </select>
-                    </form>
-                    @elseif($or->order_status == 5)
-                    <form >
-                      @csrf
-                        <select class="form-control order_details">
-                          <option id="{{$or->order_id}}" selected value="5">Đang vận chuyển</option>
-                          <option id="{{$or->order_id}}" value="6">Đang chờ người nhận nhận hàng</option>
-                          <option id="{{$or->order_id}}" value="2">Đã hoàn thành</option>
-                          <option id="{{$or->order_id}}" value="3">Hủy đơn</option>
-                        </select>
-                    </form>
                     @else
                     <form >
                       @csrf
-                      <select class="form-control order_details">
-                        <option id="{{$or->order_id}}" selected value="6">Đang chờ người nhận nhận hàng</option>
-                        <option id="{{$or->order_id}}" value="2">Đã hoàn thành</option>
-                        <option id="{{$or->order_id}}" value="3">Hủy đơn</option>
-                      </select>
+                        <input id="{{$or->order_id}}" disabled selected value="Đã hủy đơn">
                     </form>
                     @endif
                 @endforeach
@@ -237,7 +166,5 @@
         </table>
       </div>
     </div>
-    <a href="{{url('print-order/'.$details->order_code)}}">In đơn hàng</a>
-
   </div>
 @endsection

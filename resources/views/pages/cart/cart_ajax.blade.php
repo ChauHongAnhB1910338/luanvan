@@ -149,7 +149,7 @@
                 </tbody>
             </table>
             </form>
-            @if (Session::get('cart'))
+            {{-- @if (Session::get('cart'))
                 <tr>
                 <td>
                 
@@ -162,7 +162,7 @@
                                     
                 </td> 
             </tr>
-            @endif
+            @endif --}}
             
             
         </div>

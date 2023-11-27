@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BotManController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +12,6 @@ use App\Http\Controllers\BotManController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::match(['get', 'post'], '/botman', 'App\Http\Controllers\BotManController@handle');
 
 Route::get('/', 'App\Http\Controllers\HomeController@index');
 Route::get('/trangchu', 'App\Http\Controllers\HomeController@index');
@@ -32,6 +29,7 @@ Route::get('/view-order-customer/{order_code}', 'App\Http\Controllers\HomeContro
 Route::get('/admin', 'App\Http\Controllers\AdminController@index');
 Route::get('/dashboard', 'App\Http\Controllers\AdminController@show_dashboard');
 Route::post('/filter-by-date', 'App\Http\Controllers\AdminController@filter_by_date');
+Route::post('/filter30', 'App\Http\Controllers\AdminController@filter30');
 Route::post('/admin-dashboard', 'App\Http\Controllers\AdminController@dashboard');
 Route::get('/logout', 'App\Http\Controllers\AdminController@logout');
 Route::post('/dashboard-filter', 'App\Http\Controllers\AdminController@dashboard_filter');
@@ -89,10 +87,6 @@ Route::get('/delete-coupon/{coupon_id}', 'App\Http\Controllers\CouponController@
 Route::post('/insert-coupon-code', 'App\Http\Controllers\CouponController@insert_coupon_code');
 Route::get('/unset-coupon', 'App\Http\Controllers\CouponController@unset_coupon');
 
-//warehouse-admin
-Route::get('/warehouse', 'App\Http\Controllers\WarehouseController@warehouse');
-Route::get('/addproduct-warehouse', 'App\Http\Controllers\WarehouseController@addproduct_warehouse');
-
 //Check out
 Route::get('/login-checkout', 'App\Http\Controllers\CheckoutController@login_checkout');
 Route::get('/logout-checkout', 'App\Http\Controllers\CheckoutController@logout_checkout');
@@ -112,6 +106,7 @@ Route::get('/manage-order', 'App\Http\Controllers\OrderController@manage_order')
 Route::get('/view-order/{order_code}', 'App\Http\Controllers\OrderController@view_order');
 Route::post('/update-order-qty', 'App\Http\Controllers\OrderController@update_order_qty');
 Route::post('/update-qty', 'App\Http\Controllers\OrderController@update_qty');
+Route::get('/print-order/{checkout_code}', 'App\Http\Controllers\OrderController@print_order');
 
 //Delivery
 Route::get('/delivery', 'App\Http\Controllers\DeliveryController@delivery');
@@ -150,3 +145,24 @@ Route::post('/reply-comment', 'App\Http\Controllers\ProductController@reply_comm
 
 //Rating
 Route::post('/insert-rating', 'App\Http\Controllers\ProductController@insert_rating');
+
+
+//Payment
+Route::post('/vnpay-payment', 'App\Http\Controllers\CheckoutController@vnpay_payment');
+Route::post('/momo-payment', 'App\Http\Controllers\CheckoutController@momo_payment');
+
+//Store
+Route::get('/manage-order-store', 'App\Http\Controllers\StoreController@manage_order_store');
+Route::get('/add-order-store', 'App\Http\Controllers\StoreController@add_order_store');
+Route::post('/add-cart-ajax-store', 'App\Http\Controllers\StoreController@add_cart_ajax_store');
+Route::get('/del-product-store/{session_id}', 'App\Http\Controllers\StoreController@del_product_store');
+Route::get('/del-all-product-store', 'App\Http\Controllers\StoreController@del_all_product_store');
+Route::post('/update-cart-store', 'App\Http\Controllers\StoreController@update_cart_store');
+Route::post('/confirm-order-store', 'App\Http\Controllers\StoreController@confirm_order_store');
+Route::get('/view-order-store/{order_code}', 'App\Http\Controllers\StoreController@view_order_store');
+
+//warehouse-admin
+Route::get('/warehouse', 'App\Http\Controllers\WarehouseController@warehouse');
+Route::get('/addproduct-warehouse', 'App\Http\Controllers\WarehouseController@addproduct_warehouse');
+Route::post('/nhap-hang', 'App\Http\Controllers\WarehouseController@nhap_hang');
+Route::get('/view-warehouse/{warehouse_code}', 'App\Http\Controllers\WarehouseController@view_warehouse');

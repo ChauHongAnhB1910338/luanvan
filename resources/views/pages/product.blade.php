@@ -22,7 +22,7 @@
 												<p>{{ $product->product_name }}</p>
 												</a>
 												{{-- <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a> --}}
-												<button class="btn btn-default add-to-cart" type="button" data-id_product="{{$product->product_id}}" name="add-to-card" >Thêm vào giỏ hàng</button>
+												<button class="btn btn-default add-to-cart" type="button" data-id_product="{{$product->product_id}}" name="add-to-cart" >Thêm vào giỏ hàng</button>
 												</form>
 											</div>
 											

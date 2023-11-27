@@ -7,6 +7,11 @@ use DB;
 use App\HTTP\Requests;
 use Session;
 use App\Models\Statistic;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\Admin;
+use App\Models\Customer;
+
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
 session_start();
@@ -25,7 +30,12 @@ class AdminController extends Controller
     }
     public function show_dashboard(){
         $this->AuthLogin();
-        return view('admin.dashboard');
+        $product = Product::all()->count();
+        $order_online = Order::where('order_store', 0)->count();
+        $order_store = Order::where('order_store', 1)->count();
+        $admin = Admin::all()->count();
+        $customer = Customer::all()->count();
+        return view('admin.dashboard')->with(compact('product','order_store','order_online','admin','customer'));
     }
     public function dashboard(Request $request){
         $admin_email = $request->admin_email;
@@ -74,7 +84,6 @@ class AdminController extends Controller
         $dau_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->format('m/d/Y');
         $cuoi_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->format('m/d/Y');
         $sub7days = Carbon::now('Asia/Ho_Chi_Minh')->subdays(7)->format('m/d/Y');
-        $sub365days = Carbon::now('Asia/Ho_Chi_Minh')->subdays(365)->format('m/d/Y');
         $now = Carbon::now('Asia/Ho_Chi_Minh')->format('m/d/Y');
         if($data['dashboard_value']=='7ngay'){
             $get = Statistic::whereBetween('order_date',[$sub7days,$now])->orderBy('order_date','ASC')->get();
@@ -82,8 +91,6 @@ class AdminController extends Controller
             $get = Statistic::whereBetween('order_date',[$dau_thangtruoc,$cuoi_thangtruoc])->orderBy('order_date','ASC')->get();
         }elseif($data['dashboard_value']=='thangnay'){
             $get = Statistic::whereBetween('order_date',[$dauthangnay,$now])->orderBy('order_date','ASC')->get();
-        }else{
-            $get = Statistic::whereBetween('order_date',[$sub365days,$now])->orderBy('order_date','ASC')->get();
         }
         foreach($get as $key => $val) {
             $chart_data[] = array(
@@ -96,38 +103,23 @@ class AdminController extends Controller
         }
         echo $data = json_encode($chart_data);
     }
-    // public function dashboard_filter(Request $request){
-    //     $data = $request->all();
+    
+    public function filter30(Request $request){
+        $data = $request->all();
 
-    //     $dauthangnay = Carbon::now('Asia/Ho_Chi_Minh')->startOfMonth()->toDateString();
-    //     $dau_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->toDateString();
-    //     $cuoi_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->toDateString();
+        $sub30days = Carbon::now('Asia/Ho_Chi_Minh')->subdays(30)->format('m/d/Y');
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->format('m/d/Y');
+        $get = Statistic::whereBetween('order_date',[$sub30days,$now])->orderBy('order_date','ASC')->get();
 
-    //     $sub7days = Carbon::now('Asia/Ho_Chi_Minh')->subdays(7)->toDateString();
-    //     $sub365days = Carbon::now('Asia/Ho_Chi_Minh')->subdays(365)->toDateString();
-
-    //     $now = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
-
-    //     if($data['dashboard_value']=='7ngay'){
-    //         $get = Statistic::whereBetween('order_date',[$sub7days,$now])->orderBy('order_date','ASC')->get();
-    //     }elseif($data['dashboard_value']=='thangtruoc'){
-    //         $get = Statistic::whereBetween('order_date',[$dau_thangtruoc,$cuoi_thangtruoc])->orderBy('order_date','ASC')->get();
-    //     }elseif($data['dashboard_value']=='thangnay'){
-    //         $get = Statistic::whereBetween('order_date',[$dauthangnay,$now])->orderBy('order_date','ASC')->get();
-    //     }else{
-    //         $get = Statistic::whereBetween('order_date',[$sub365days,$now])->orderBy('order_date','ASC')->get();
-    //     }
-
-    //     foreach($get as $key => $val){
-    //         $chart_data[] = array(
-    //             'period' => $val->order_date,
-    //             'order' => $val->total_order,
-    //             'sales' => $val->sales,
-    //             'profit' => $val->profit,
-    //             'quantity' => $val->quantity
-    //         );
-    //     }
-
-    //     echo $data = json_encode($chart_data);
-    // }
+        foreach($get as $key => $val) {
+            $chart_data[] = array(
+                'period' => $val->order_date,
+                'order' => $val->total_order,
+                'sales' => $val->sales,
+                'profit' => $val->profit,
+                'quantity' => $val->quantity
+            );
+        }
+        echo $data = json_encode($chart_data);
+    }
 }

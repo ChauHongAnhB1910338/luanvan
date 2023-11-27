@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\Warehouse;
+use App\Models\WarehouseDetails;
+use App\Models\Product;
+use Carbon\Carbon;
 use App\HTTP\Requests;
 use Session;
 use Illuminate\Support\Facades\Redirect;
@@ -17,21 +20,66 @@ class WarehouseController extends Controller
             return Redirect::to('dashboard');
         } else return Redirect::to('admin')->send();
     }
+    public function view_warehouse($warehouse_code){
+        $this->AuthLogin();
+        $warehouse_details = WarehouseDetails::with('product')->where('warehouse_code',$warehouse_code)->get();
+        $warehouse = Warehouse::where('warehouse_code',$warehouse_code)->get();
+        foreach($warehouse as $key => $ware){
+            $admin_id = $ware->admin_id;
+            $warehouse_notes = $ware->warehouse_notes;
+            $warehouse_date = $ware->warehouse_date;
+        }
+        $warehouse_details = WarehouseDetails::with('product')->where('warehouse_code',$warehouse_code)->get();
+
+        return view('admin.view_details_warehouse')->with(compact('warehouse_details','admin_id','warehouse_notes','warehouse_date'));
+    }
+
+    public function nhap_hang(Request $request){
+
+        $data = $request->all();
+
+        $warehouse = new Warehouse();
+        $warehouse->admin_id = '1';
+        $checkout_code = substr(md5(microtime()),rand(0,26),5);
+        $warehouse->warehouse_code = $checkout_code;
+        $warehouse->warehouse_notes = $data['warehouse_note'];
+        // $warehouse->warehouse_notes = 'Thử nghiệm';
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
+        $warehouse->warehouse_date = $today;
+        $warehouse->save();
+
+        // Lấy dữ liệu từ mảng "data" và lưu vào cơ sở dữ liệu warehouseDetails
+            $danhSachSanPham = json_decode($data['data'], true);
+        foreach($danhSachSanPham as $sanPham){
+            $warehouseDetail = new WarehouseDetails();
+            $warehouseDetail->warehouse_code = $checkout_code;
+            $warehouseDetail->product_id = $sanPham['product_id'];
+            $warehouseDetail->product_name = $sanPham['product_name'];
+            $warehouseDetail->product_quantity = $sanPham['quantity'];
+            $warehouseDetail->product_price = $sanPham['price'];
+            $warehouseDetail->product_total = $sanPham['fee'];
+            $warehouseDetail->save();
+
+            // Tìm sản phẩm trong bảng tbl_product dựa trên id_product
+            $product = Product::find($sanPham['product_id']);
+
+            // Cộng product_quantity vào thuộc tính product_quantity của bảng tbl_product
+            $product->product_quantity += $sanPham['quantity'];
+            $product->save();
+        }
+        
+    }
     public function warehouse(){
         $this->AuthLogin();
-        $all_product = DB::table('tbl_product')
-        ->join('tbl_category_product','tbl_category_product.category_id','=','tbl_product.category_id')
-        ->join('tbl_brand_product','tbl_brand_product.brand_id','=','tbl_product.brand_id')
-        ->orderby('tbl_product.product_id','desc')->get();
-
-        $manager_product = view('admin.warehouse')->with('warehouse',$all_product);
-        return view('admin_layout')->with('admin.warehouse',$manager_product);
+        $warehouse = Warehouse::orderby('warehouse_date','DESC')->get();
+        return view('admin.warehouse')->with(compact('warehouse'));
     }
     public function addproduct_warehouse(){
         $this->AuthLogin();
-        $cate_product = DB::table('tbl_category_product')->orderby('category_id','desc')->get();
-        $brand_product = DB::table('tbl_brand_product')->orderby('brand_id','desc')->get();
-        return view('admin.addproduct_warehouse')->with('cate_product',$cate_product)->with('brand_product',$brand_product);
+        $addproduct_warehouse = DB::table('tbl_product')
+        ->orderby('tbl_product.product_id','desc')->get();
+        return view('admin.addproduct_warehouse')->with('all_product',$addproduct_warehouse);
     }
     public function save_product(Request $request){
         $this->AuthLogin();

@@ -25,7 +25,6 @@
                         Lọc theo:
                         <select class="dashboard-filter form-control">
                             <option >---Chọn số ngày---</option>
-                            <option value="365ngayqua">Hôm nay</option>
                             <option value="7ngay">7 ngày qua</option>
                             <option value="thangtruoc">tháng trước</option>
                             <option value="thangnay">tháng này</option>
@@ -40,5 +39,28 @@
                 <div id="myfirstchart" style="height: 250px;"></div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-4 col-xs-12">
+                <p class="title_thongke" style="color:rgb(26, 234, 26);">Thống kê số lượng admin</p>
+                <div id="donut-example"></div>
+            </div>
+            
+        </div>
+        {{-- Biểu đồ donut --}}
+        <script>
+            Morris.Donut({
+                element: 'donut-example',
+                data: [
+                    {label: "Sản phẩm", value: <?php echo $product ?>, color: "#FF0000"},
+                    {label: "Đơn hàng tại cửa hàng", value: <?php echo $order_store ?>, color: "#00FF00"},
+                    {label: "Đơn hàng online", value: <?php echo $order_online ?>, color: "#0000FF"},
+                    {label: "Nhân viên", value: <?php echo $admin ?>, color: "#FFFF00"},
+                    {label: "Khách hàng", value: <?php echo $customer ?>, color: "#FF00FF"}
+                ]
+            });
+
+        </script>        
     </div>
+    
 @endsection

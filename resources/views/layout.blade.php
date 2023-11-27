@@ -26,9 +26,13 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{asset('images/ico/apple-touch-icon-72-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" href="{{asset('images/ico/apple-touch-icon-57-precomposed.png')}}">
 
-	{{-- botman --}}
-	<link type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
-
+	<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+	<df-messenger
+	intent="WELCOME"
+	chat-title="ChatBot_AI"
+	agent-id="148065c8-7ab3-4bd3-8e14-1cb074ffefd4"
+	language-code="vi"
+	></df-messenger>
 
 </head><!--/head-->
 
@@ -194,8 +198,8 @@
 						
 					</div><!--/category-products-->
 
-					<h2>Thương hiệu</h2>
-					<div class="panel-group text-center category-products" id="accordian"><!--brands_products-->
+					{{-- <h2>Thương hiệu</h2> --}}
+					{{-- <div class="panel-group text-center category-products" id="accordian"><!--brands_products-->
 						@foreach ($brand as $key => $brand)
 							<div class="panel panel-default">
 								<div class="panel-heading">
@@ -207,7 +211,7 @@
 								</div>
 							</div>
 						@endforeach
-					</div><!--/brands_products-->
+					</div><!--/brands_products--> --}}
 					
 				
 				</div>
@@ -274,6 +278,25 @@
 	<script src="{{asset('public/frontend/js/prettify.js')}}"></script>
 	{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
 
+	<script>
+		$(document).ready(function() {
+			$('#imageGallery').lightSlider({
+				gallery:true,
+				item:1,
+				loop:true,
+				thumbItem:3,
+				slideMargin:0,
+				enableDrag: false,
+				currentPagerPosition:'left',
+				onSliderLoad: function(el) {
+					el.lightGallery({
+						selector: '#imageGallery .lslide'
+					});
+				}   
+			});  
+		});
+	</script>
+
 	<script type="text/javascript">
 		function remove_background(product_id){
 			for(var count=1; count <= 5; count++)
@@ -285,6 +308,7 @@
 		$(document).on('mouseenter','.rating',function(){
 			var index = $(this).data("index");
 			var product_id = $(this).data('product_id');
+			var customer_id = $(this).data('customer_id');
 			
 			remove_background(product_id);
 			
@@ -296,6 +320,7 @@
 		$(document).on('mouseleave','.rating',function(){
 			var index = $(this).data("index");
 			var product_id = $(this).data('product_id');
+			var customer_id = $(this).data('customer_id');
 			var rating = $(this).data('rating');
 			remove_background(product_id);
 			
@@ -307,19 +332,25 @@
 		$(document).on('click','.rating',function(){
 			var index = $(this).data("index");
 			var product_id = $(this).data('product_id');
+			var customer_id = $(this).data('customer_id');
 			var _token = $('input[name="_token"]').val();
 			remove_background(product_id);
 			
 			$.ajax({
 				url: "{{url('/insert-rating')}}",
 				method: 'POST',
-				data: {index:index,product_id:product_id,_token:_token},
+				data: {index:index,product_id:product_id,customer_id:customer_id,_token:_token},
 				success:function(data){
 					if(data == 'done'){
 						alert("Bạn đã đánh giá sản phẩm này: "+index+"sao");
+					}else if(data = 'change'){
+						alert("Bạn đã thay đổi đánh giá sản phẩm này thành: "+index+"sao");
 					}else{
-						alert("Có lỗi xảy ra vui lòng thử lại!")
+						alert("Có lỗi xảy ra, vui lòng thử lại sau!");
 					}
+					window.setTimeout(function(){
+						location.reload();
+					}, 1000);
 				}
 			});
 		});
@@ -360,35 +391,7 @@
 			});
 		});
 	</script>
-
-	{{-- botman --}}
-	<script>
-		$(document).ready(function() {
-			$('#imageGallery').lightSlider({
-				gallery:true,
-				item:1,
-				loop:true,
-				thumbItem:3,
-				slideMargin:0,
-				enableDrag: false,
-				currentPagerPosition:'left',
-				onSliderLoad: function(el) {
-					el.lightGallery({
-						selector: '#imageGallery .lslide'
-					});
-				}   
-			});  
-		});
-	</script>
-
-    <script>
-        var botmanWidget = {
-            aboutText: 'Start the conversation with Hi',
-            introMessage: "WELCOME TO ALL ABOUT LARAVEL"
-        };
-    </script>
    
-    <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 	<script>
 		$(document).ready(function(){
 			$('.send_order').click(function(){
@@ -443,7 +446,7 @@
 							'feeship': feeship,
 							'_token': _token},
 						});
-						console.log(feeship);
+						// console.log(feeship);
 						swal("Đặt hàng thành công!","Chúng tôi sẽ sớm liên hệ với bạn!","success");
 
 						window.setTimeout(function(){
@@ -474,7 +477,7 @@
 				var cart_product_qty = $('.cart_product_qty_' + id).val();
 				var _token = $('input[name="_token"]').val();
 				if(parseInt(cart_product_qty)>parseInt(cart_product_quantity)){
-					alert('Kho hàng không đủ. Xin hãy đặt ít hơn ' +cart_product_quantity);
+					alert('Sản phẩm này đã hết hàng!');
 				}else{
 					$.ajax({
 					url: '{{url('/add-cart-ajax')}}',

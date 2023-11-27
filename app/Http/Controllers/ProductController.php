@@ -144,13 +144,26 @@ class ProductController extends Controller
             $product_cate_name = $value->category_name;
         }
         //gallery
-            $gallery = Gallery::where('product_id',$product_id)->get();
+        $gallery = Gallery::where('product_id',$product_id)->get();
+
+        //count-view
+        $product = DB::table('tbl_product')->where('tbl_product.product_id', $product_id)->first();
+        if ($product) {
+            // Tăng số lượt xem lên 1
+            $product->product_view += 1;
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            DB::table('tbl_product')->where('tbl_product.product_id', $product_id)->update(['product_view' => $product->product_view]);
+        }
+        //related
         $related_product = DB::table('tbl_product')
         ->join('tbl_category_product','tbl_category_product.category_id','=','tbl_product.category_id')
         ->join('tbl_brand_product','tbl_brand_product.brand_id','=','tbl_product.brand_id')
         ->where('tbl_category_product.category_id',$category_id)->whereNotIn('tbl_product.product_id',[$product_id])->get();
         //rating
         $rating = Rating::where('product_id',$product_id)->avg('rating');
+        $customer_rating = Rating::where('product_id',$product_id)->where('customer_id',Session::get('customer_id'))->avg('rating');
+
         $rating = round($rating);
 
         return view('pages.product.show_detail')
@@ -163,6 +176,7 @@ class ProductController extends Controller
         ->with('product_cate_id',$product_cate_id)
         ->with('gallery',$gallery)
         ->with('rating',$rating)
+        ->with('customer_rating',$customer_rating)
         ;
     }
     public function load_comment(Request $request){
@@ -244,10 +258,20 @@ class ProductController extends Controller
     }
     public function insert_rating(Request $request){
         $data = $request->all();
-        $rating = new Rating();
-        $rating->product_id = $data['product_id'];
-        $rating->rating = $data['index'];
-        $rating->save();
-        echo 'done';
+        $ratingExists = DB::table('tbl_rating')->where('customer_id', $data['customer_id'])->where('product_id', $data['product_id'])->exists();
+        if(!$ratingExists){
+            $rating = new Rating();
+            $rating->product_id = $data['product_id'];
+            $rating->customer_id = $data['customer_id'];
+            $rating->rating = $data['index'];
+            $rating->save();
+            echo 'done';
+        }else{
+            DB::table('tbl_rating')
+            ->where('customer_id', $data['customer_id'])
+            ->where('product_id',$data['product_id'])
+            ->update(['rating' => $data['index']]);
+            echo 'change';
+        }
     }
 }
