@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use DB;
 use App\HTTP\Requests;
 use Session;
+use App\Models\Product;
+
 use App\Models\Brand;
 use Illuminate\Support\Facades\Redirect;
 session_start();
@@ -97,12 +99,48 @@ class BrandProduct extends Controller
         return Redirect::to('all-brand-product');
     }
     // End Admin
-    public function show_brand_home($brand_id){
-        $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
-        $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
-        $brand_by_id = DB::table('tbl_product')
-        ->join('tbl_brand_product','tbl_brand_product.brand_id','=','tbl_product.brand_id')->where('tbl_product.brand_id',$brand_id)->get();
-        $brand_name = DB::table('tbl_brand_product')->where('brand_id',$brand_id)->limit(1)->get();
-        return view('pages.brand.show_brand')->with('category',$cate_product)->with('brand',$brand_product)->with('brand_by_id',$brand_by_id)->with('brand_name',$brand_name);
+    public function show_brand_home($brand_id)
+    {
+        $cate_product = DB::table('tbl_category_product')->where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = DB::table('tbl_brand_product')->where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+
+        $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : '';
+
+        $query = Product::with('category')->where('brand_id', $brand_id);
+
+        switch ($sort_by) {
+            case 'giam_dan':
+                $query->orderByRaw('CAST(product_price AS DECIMAL(10,2)) DESC');
+                break;
+            case 'tang_dan':
+                $query->orderByRaw('CAST(product_price AS DECIMAL(10,2)) ASC');
+                break;
+            case 'kytu_za':
+                $query->orderBy('product_name', 'desc');
+                break;
+            case 'kytu_az':
+                $query->orderBy('product_name', 'asc');
+                break;
+            case 'duoi200':
+                $query->where('product_price', '<', 200000)->orderBy('product_price', 'asc');
+                break;
+            case '200_500':
+                $query->whereBetween('product_price', [200000, 500000])->orderBy('product_price', 'asc');
+                break;
+            case '500_1000':
+                $query->whereBetween('product_price', [500000, 1000000])->orderBy('product_price', 'asc');
+                break;
+            case 'tren1000':
+                $query->where('product_price', '>', 1000000)->orderBy('product_price', 'asc');
+                break;
+            default:
+                $query->orderBy('product_id', 'desc');
+                break;
+        }
+
+        $brand_by_id = $query->paginate(6)->appends(request()->query());
+        $brand_name = DB::table('tbl_brand_product')->where('brand_id', $brand_id)->limit(1)->get();
+
+        return view('pages.brand.show_brand')->with('category', $cate_product)->with('brand', $brand_product)->with('brand_by_id', $brand_by_id)->with('brand_name', $brand_name);
     }
 }

@@ -91,6 +91,8 @@ Route::get('/unset-coupon', 'App\Http\Controllers\CouponController@unset_coupon'
 Route::get('/login-checkout', 'App\Http\Controllers\CheckoutController@login_checkout');
 Route::get('/logout-checkout', 'App\Http\Controllers\CheckoutController@logout_checkout');
 Route::post('/login-customer', 'App\Http\Controllers\CheckoutController@login_customer');
+Route::get('/account-details/{customer_id}', 'App\Http\Controllers\CheckoutController@account_details');
+Route::post('/edit-customer-details/{customer_id}', 'App\Http\Controllers\CheckoutController@edit_customer_details');
 Route::post('/add-customer', 'App\Http\Controllers\CheckoutController@add_customer');
 Route::post('/order-place', 'App\Http\Controllers\CheckoutController@order_place');
 Route::get('/checkout', 'App\Http\Controllers\CheckoutController@checkout');
@@ -166,3 +168,9 @@ Route::get('/warehouse', 'App\Http\Controllers\WarehouseController@warehouse');
 Route::get('/addproduct-warehouse', 'App\Http\Controllers\WarehouseController@addproduct_warehouse');
 Route::post('/nhap-hang', 'App\Http\Controllers\WarehouseController@nhap_hang');
 Route::get('/view-warehouse/{warehouse_code}', 'App\Http\Controllers\WarehouseController@view_warehouse');
+
+//Customer
+    Route::get('/all-customer', 'App\Http\Controllers\UserController@all_customer');
+    Route::get('/edit-customer/{customer_id}', 'App\Http\Controllers\UserController@edit_customer');
+    Route::get('/delete-customer/{customer_id}', 'App\Http\Controllers\UserController@delete_customer');
+    Route::post('/update-customer/{customer_id}', 'App\Http\Controllers\UserController@update_customer');

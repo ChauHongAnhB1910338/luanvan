@@ -25,6 +25,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{asset('images/ico/apple-touch-icon-114-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{asset('images/ico/apple-touch-icon-72-precomposed.png')}}">
     <link rel="apple-touch-icon-precomposed" href="{{asset('images/ico/apple-touch-icon-57-precomposed.png')}}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">
 
 	<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
 	<df-messenger
@@ -33,6 +34,20 @@
 	agent-id="148065c8-7ab3-4bd3-8e14-1cb074ffefd4"
 	language-code="vi"
 	></df-messenger>
+
+	<style>
+        .image-list-brand {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+
+        .image-list-brand img {
+            width: 150px;
+            height: auto;
+            margin-right: 10px;
+        }
+    </style>
 
 </head><!--/head-->
 
@@ -75,7 +90,6 @@
 					<div class="col-sm-5">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-star"></i> Yêu thích</a></li>
 								<?php 
 								$shipping_id = Session::get('shipping_id');
 								$customer_id = Session::get('customer_id');
@@ -104,6 +118,7 @@
 								$customer_id = Session::get('customer_id');
 								if($customer_id!=NULL){
 								?>
+								<li><a href="{{URL::to('/account-details/'.$customer_id)}}"><i class="fa fa-lock"></i> Tài khoản</a></li>
 								<li><a href="{{URL::to('/logout-checkout')}}"><i class="fa fa-lock"></i> Đăng xuất</a></li>
 								<?php 
 								}else{
@@ -198,7 +213,7 @@
 						
 					</div><!--/category-products-->
 
-					{{-- <h2>Thương hiệu</h2> --}}
+					
 					{{-- <div class="panel-group text-center category-products" id="accordian"><!--brands_products-->
 						@foreach ($brand as $key => $brand)
 							<div class="panel panel-default">
@@ -218,6 +233,15 @@
 			</div>
 			<div class="col-md-9 col-sm-9">
 				@yield('content')
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="image-list-brand">
+					@foreach($brand as $key => $brand)
+						<a href="{{URL::to('/thuong-hieu-san-pham/'.$brand->brand_id)}}">
+							<img src="{{ asset('public/uploads/brand/' . $brand->brand_image) }}" alt="{{ $brand->brand_name }}">
+						</a>
+					@endforeach
+				</div>
 			</div>
 		</div>
 	</section>
@@ -276,7 +300,76 @@
 	<script src="{{asset('public/frontend/js/lightgallery-all.min.js')}}"></script>
 	<script src="{{asset('public/frontend/js/lightslider.js')}}"></script>
 	<script src="{{asset('public/frontend/js/prettify.js')}}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 	{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+
+	{{-- <script>
+        // Tự động chạy danh sách hình ảnh
+        var imageList = document.querySelector('.image-list-brand');
+        var images = imageList.querySelectorAll('img');
+        var currentIndex = 0;
+        var interval = setInterval(function() {
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        }, 3000);
+
+        // Ngừng tự động chạy khi người dùng tương tác
+        imageList.addEventListener('mouseover', function() {
+            clearInterval(interval);
+        });
+
+        // Tiếp tục tự động chạy khi người dùng không tương tác
+        imageList.addEventListener('mouseout', function() {
+            interval = setInterval(function() {
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            }, 3000);
+        });
+    </script> --}}
+
+	<script>
+		$(document).ready(function() {
+			$( "#slider-range" ).slider({
+				orientation: "horizontal",
+				range: true,
+				values: [ 17, 67 ],
+				slide: function( event, ui ) {
+					$( "#amount" ).val( "đ" + ui.values[ 0 ] + " - đ" + ui.values[ 1 ] );
+					$( "#start_price" ).val(ui.values[ 0 ] );
+					$( "#end_price" ).val( ui.values[ 1 ]);
+				}
+			});
+
+			$( "#amount" ).val( "đ" + $( "#slider-range" ).slider( "values", 0 ) +
+				" - đ" + $( "#slider-range" ).slider( "values", 1 ) ); 
+		});
+	</script>
+
+	{{-- Đường dẫn lọc sản phẩm theo kiểu --}}
+	<script>
+		$(document).ready(function() {
+			$('#sort_by_type').on('change',function(){
+				var url = $(this).val();
+				if(url){
+					window.location = url;
+				}
+				return false;
+			});  
+		});
+	</script>
+
+	{{-- Đường dẫn lọc sản phẩm theo giá --}}
+	<script>
+		$(document).ready(function() {
+			$('#sort_by_price').on('change',function(){
+				var url = $(this).val();
+				if(url){
+					window.location = url;
+				}
+				return false;
+			});  
+		});
+	</script>
 
 	<script>
 		$(document).ready(function() {

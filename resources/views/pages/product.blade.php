@@ -1,7 +1,40 @@
 @extends('layout')
 @section('content')
 					<div class="features_items"><!--features_items-->
+						
 						<h2 class="title text-center">Tất cả sản phẩm</h2>
+
+						<div class="row">
+							<div class="col-md-4">
+								<label for="amount">Sắp xếp theo</label>
+								<form>
+									@csrf
+									<select name="sort_by_type" id="sort_by_type" class="form-control">
+										<option value="{{Request::url()}}?sort_by=none">Lọc theo kiểu</option>
+										<option value="{{Request::url()}}?sort_by=kytu_az">Theo tên từ A-Z</option>
+										<option value="{{Request::url()}}?sort_by=kytu_za">Theo tên từ Z-A</option>
+										<option value="{{Request::url()}}?sort_by=tang_dan">Giá tăng dần</option>
+										<option value="{{Request::url()}}?sort_by=giam_dan">Giá giảm dần</option>
+									</select>
+								</form>
+							</div>
+
+							<div class="col-md-4">
+								<label for="amount">Sắp xếp theo giá</label>
+								<form>
+									@csrf
+									<select name="sort_by_price" id="sort_by_price" class="form-control">
+										<option value="{{Request::url()}}?sort_by=none">Lọc giá từ</option>
+										<option value="{{Request::url()}}?sort_by=duoi200">Dưới 200k</option>
+										<option value="{{Request::url()}}?sort_by=200_500">Trên 200k dưới 500k</option>
+										<option value="{{Request::url()}}?sort_by=500_1000">Từ 500k tới 1 triệu</option>
+										<option value="{{Request::url()}}?sort_by=tren1000">Trên 1 triệu</option>
+									</select>
+								</form>
+							</div>
+						</div>
+						<br>
+
 						@foreach ($all_product as $key => $product)
 							<div class="container-fluid col-sm-3">
 								<div class="product-image-wrapper">
@@ -28,11 +61,6 @@
 											
 									</div>
 									
-									<div class="choose">
-										<ul class="nav nav-pills nav-justified">
-											<li><a href="#"><i class="fa fa-heart"></i>Yêu thích</a></li>
-										</ul>
-									</div>
 								</div>
 							</div>
 						@endforeach

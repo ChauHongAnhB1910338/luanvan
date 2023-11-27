@@ -148,17 +148,17 @@
                     @csrf
                     <div>
                       <a style="margin-right: 75px">Họ tên: </a>
-                      <input type="text" name="shipping_name" class="shipping_name" placeholder="Họ và tên">
+                      <input required type="text" name="shipping_name" class="shipping_name" placeholder="Họ và tên">
                     </div>
                     <br>
                     <div>
                       <a style="margin-right: 30px">Số điện thoại: </a>
-                      <input type="text" name="shipping_phone" class="shipping_phone" placeholder="Số điện thoại">
+                      <input required type="text" name="shipping_phone" class="shipping_phone" placeholder="Số điện thoại">
                     </div>
                     <br>
                     <div>
                       <a style="margin-right: 9px">Ghi chú hóa đơn: </a>
-                      <textarea name="shipping_notes" class="shipping_notes" placeholder="Ghi chú kèm theo" rows="5"></textarea>
+                      <textarea required name="shipping_notes" class="shipping_notes" placeholder="Ghi chú kèm theo" rows="5"></textarea>
                     </div>
                     <br>
                     @if (Session::get('coupon'))

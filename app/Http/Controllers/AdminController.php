@@ -31,11 +31,12 @@ class AdminController extends Controller
     public function show_dashboard(){
         $this->AuthLogin();
         $product = Product::all()->count();
+        $product_views = Product::orderBy('product_view','DESC')->take(20)->get();
         $order_online = Order::where('order_store', 0)->count();
         $order_store = Order::where('order_store', 1)->count();
         $admin = Admin::all()->count();
         $customer = Customer::all()->count();
-        return view('admin.dashboard')->with(compact('product','order_store','order_online','admin','customer'));
+        return view('admin.dashboard')->with(compact('product','product_views','order_store','order_online','admin','customer'));
     }
     public function dashboard(Request $request){
         $admin_email = $request->admin_email;

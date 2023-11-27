@@ -32,6 +32,29 @@ class CheckoutController extends Controller
         $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
         return view('pages.checkout.login_checkout')->with('category',$cate_product)->with('brand',$brand_product);
     }
+    public function account_details($customer_id){
+        $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
+        $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
+        $customer = DB::table('tbl_customer')->where('customer_id',$customer_id)->first();
+        return view('pages.customer.customer_details')->with('customer',$customer)->with('category',$cate_product)->with('brand',$brand_product);
+    }
+    
+    public function edit_customer_details(Request $request, $customer_id) {
+        $cate_product = DB::table('tbl_category_product')->where('category_status', '1')->orderby('category_id', 'desc')->get();
+        $brand_product = DB::table('tbl_brand_product')->where('brand_status', '1')->orderby('brand_id', 'desc')->get();
+        $customer = DB::table('tbl_customer')->where('customer_id', $customer_id)->first();
+        if ($customer) {
+            DB::table('tbl_customer')->where('tbl_customer.customer_id', $customer_id)->update([
+                'customer_name' => $request->name,
+                'customer_email' => $request->email,
+                'customer_phone' => $request->phone
+            ]);
+            session()->flash('message', 'Chỉnh sửa thông tin tài khoản thành công!');
+        }else{
+            session()->flash('message', 'Chỉnh sửa thông tin tài khoản thất bại!');
+        }
+        return redirect()->back()->with('customer', $customer)->with('category', $cate_product)->with('brand', $brand_product);
+    }
     public function add_customer(Request $request){
         $data = array();
         $data['customer_name'] = $request->customer_name;
@@ -119,6 +142,7 @@ class CheckoutController extends Controller
         $result = DB::table('tbl_customer')->where('customer_email',$email)->where('customer_password',$password)->first();
         if($result){
             Session::put('customer_id',$result->customer_id);
+            Session::put('customer_name',$result->customer_name);
             return Redirect::to('/checkout');
         }else{
             return Redirect::to('/login-checkout');

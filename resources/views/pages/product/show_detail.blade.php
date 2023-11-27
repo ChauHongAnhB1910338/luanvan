@@ -94,11 +94,6 @@
         
         <div class="tab-pane fade" id="reviews" >
             <div class="col-sm-12">
-                <ul>
-                    <li><a href=""><i class="fa fa-user"></i>User</a></li>
-                    <li><a href=""><i class="fa fa-clock-o"></i>12:41 AM</a></li>
-                    <li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li>
-                </ul>
                 <style>
                     .row.style_comment{
                         border: 1px solid #ddd;
@@ -115,38 +110,44 @@
                 
                 
             </div>
-            <div class="col-md-12" style="padding-top: 10px">
-                <form action="#">
-                    <span>
-                        <input style="width: 100%; margin-left: 0" type="text" class="comment_name" placeholder="Tên của bạn"/>
-                    </span>
-                    <textarea name="comment" class="comment_content" placeholder="Nhập bình luận"></textarea>
-                    <div id="notify_comment"></div>
-                    <?php 
-						$check_customer_id = Session::get('customer_id');
-						if($check_customer_id!=NULL){
-					?>
-                    <ul class="list-inline" title="Average Rating">
-                        @for ($count=1; $count <= 5; $count++)
-                            @php
-                                if ($count <= $customer_rating) {
-                                    $color = 'color:#ffcc00;';
-                                } else {
-                                    $color = 'color:#ccc;';
-                                }
-                                
-                            @endphp
-                            <li title="Đánh giá sao" id="{{$product->product_id}}-{{$count}}" data-index="{{$count}}" data-product_id="{{$product->product_id}}" data-customer_id="{{$check_customer_id}}" data-rating="{{$rating}}" class="rating" style="cursor: pointer;{{$color}};font-size:30px">&#9733;</li>
-                        @endfor
-                    </ul>
-                    <?php
-                        }
-                    ?>
-                    <button type="button" class="btn btn-default pull-right send-comment">
-                        Đăng bình luận
-                    </button>
-                </form>
-            </div>
+            <?php 
+				$check_customer_id = Session::get('customer_id');
+                $check_customer_name = Session::get('customer_name');
+		    		if($check_customer_id!=NULL){
+			?>
+                <div class="col-md-12" style="padding-top: 10px">
+                    
+                    <form action="#">
+                        
+                        <span>
+                            <input type="hidden" class="comment_name" value="{{$check_customer_name}}" placeholder="Tên của bạn"/>
+                        </span>
+                        <textarea name="comment" class="comment_content" placeholder="Nhập bình luận"></textarea>
+                        <div id="notify_comment"></div>
+                        
+                        <ul class="list-inline" title="Average Rating">
+                            @for ($count=1; $count <= 5; $count++)
+                                @php
+                                    if ($count <= $customer_rating) {
+                                        $color = 'color:#ffcc00;';
+                                    } else {
+                                        $color = 'color:#ccc;';
+                                    }
+                                    
+                                @endphp
+                                <li title="Đánh giá sao" id="{{$product->product_id}}-{{$count}}" data-index="{{$count}}" data-product_id="{{$product->product_id}}" data-customer_id="{{$check_customer_id}}" data-rating="{{$rating}}" class="rating" style="cursor: pointer;{{$color}};font-size:30px">&#9733;</li>
+                            @endfor
+                        </ul>
+                        
+                        <button type="button" class="btn btn-default pull-right send-comment">
+                            Đăng bình luận
+                        </button>
+                    </form>
+                    
+                </div>
+            <?php
+                }
+            ?>
         </div>
         
     </div>

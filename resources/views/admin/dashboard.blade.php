@@ -7,6 +7,14 @@
                 font-size: 20px;
                 font-weight: bold;
             }
+            ol.list_views {
+                margin: 10px 0;
+                color: #fff;
+            }
+            ol.list_views a{
+                color: orange;
+                font-weight: 400;
+            }
         </style>
         <div class="row">
             <p class="title_thongke" style="color:rgb(26, 234, 26);">Thống kê doanh số bán hàng</p>
@@ -41,12 +49,22 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-xs-12">
+            <div class="col-md-6 col-xs-12">
                 <p class="title_thongke" style="color:rgb(26, 234, 26);">Thống kê số lượng admin</p>
                 <div id="donut-example"></div>
             </div>
-            
+            <div class="col-md-6 col-xs-12">
+                <p class="title_thongke" style="color:rgb(26, 234, 26);">Sản phẩm được quan tâm nhiều nhất</p>
+                <ol class="list_views">
+                    @foreach ($product_views as $views)
+                        <li>
+                            <a target="_blank" href="{{url('/chi-tiet-san-pham/'.$views->product_id)}}">{{$views->product_name}} | Lượt xem: {{$views->product_view}}</a>
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
         </div>
+
         {{-- Biểu đồ donut --}}
         <script>
             Morris.Donut({

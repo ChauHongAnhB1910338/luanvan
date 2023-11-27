@@ -153,61 +153,61 @@
             </table>
             </form>
             @if (Session::get('cart'))
-                <tr>
-                    <td>
-                    
-                    <form action="{{url('/check-coupon')}}" method="POST">
-                    @csrf 
-                        <input type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
+                <style>
+                    .table123 {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                
+                    .table td {
+                        padding: 10px;
+                    }
+                
+                    .table .form-group {
+                        margin-bottom: 10px;
+                    }
+                </style>
+                        <table class="table123">
+                            <tr>
+                                <td>
+                                    <form action="{{url('/check-coupon')}}" method="POST">
+                                        @csrf 
+                                        <input style="margin-right: 15px" type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
+                                        <input type="submit" class="btn btn-default check_coupon" name="check_coupon" value="Tính mã giảm giá">
+                                    </form>
+                                </td>
+                                <td>
+                                    <h4>Chọn địa chỉ để tính phí vận chuyển</h4>
+                                    <form>
+                                        {{csrf_field()}}
+                                        <div class="form-group">
+                                            <label for="ex">Chọn thành phố</label>
+                                            <select name="city" id="city" class="form-control input-sm m-bot15 choose city">
+                                                <option value="">Chọn tỉnh thành phố</option>
+                                                @foreach ($city as $key => $ci)
+                                                    <option value="{{$ci->matp}}"> {{$ci->name_city}} </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ex">Chọn quận huyện</label>
+                                            <select name="province" id="province" class="form-control input-sm m-bot15 choose province">
+                                                <option value="">--Chọn quận huyện--</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ex">Chọn xã phường thị trấn</label>
+                                            <select name="wards" id="wards" class="form-control input-sm m-bot15 wards">
+                                                <option value="">--Chọn xã phường thị trấn--</option>
+                                            </select>
+                                        </div>
+                                        <input type="button" class="btn btn-primary btn-sm calculate_delivery" name="calculate_order" value="Tính phí vận chuyển">
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
                         
-                        <input type="submit" class="btn btn-default check_coupon" name="check_coupon" value="Tính mã giảm giá">
-                    </form>
-                                        
-                    </td> 
-                    <td>
-                        <h4> Chọn địa chỉ để tính phí vận chuyển</h4>
-                        <form>
-                            {{csrf_field()}}
-                            <div class="form-group">
-                                <label for="ex">Chọn thành phố</label>
-                                <select name="city" id="city" class="form-control input-sm m-bot15 choose city">
-                                    <option value="">Chọn tỉnh thành phố</option>
-                                        @foreach ($city as $key => $ci)
-                                            <option value="{{$ci->matp}}"> {{$ci->name_city}} </option>
-                                        @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="ex">Chọn quận huyện</label>
-                                <select name="province" id="province" class="form-control input-sm m-bot15 choose province">
-                                    <option value="">--Chọn quận huyện--</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="ex">Chọn xã phường thị trấn</label>
-                                <select name="wards" id="wards" class="form-control input-sm m-bot15 wards">
-                                    <option value="">--Chọn xã phường thị trấn--</option>
-                                </select>
-                            </div>
-                            <input type="button" class="btn btn-primary btn-sm calculate_delivery" name="calculate_order" value="Tính phí vận chuyển">
-                        </form>
-                        
-                    </td>
-                    <td>
-                        <form action="{{url('/vnpay-payment')}}" method="POST">
-                            @csrf
-                            <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_vnpay" class="form-control">
-                            
-                            <button type="submit" class="btn btn-default check_out" name="redirect" >Thanh toán VNPay</button>
-                        </form>
-                        <form action="{{url('/momo-payment')}}" method="POST">
-                            @csrf
-                            <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_momo" class="form-control">
-                            
-                            <button type="submit" class="btn btn-default check_out" name="payUrl" >Thanh toán MOMO</button>
-                        </form>
-                    </td>
-                </tr>
+
             @endif
             
             
@@ -215,7 +215,7 @@
         @if ($count_product!=0)
             <div class="shopper-informations">
             <div class="row">
-                <div class="col-sm-12 clearfix">
+                <div class="col-sm-8 clearfix">
                     <div class="bill-to">
                         <p>Thông tin người nhận</p>
                         <div class="form-one">
@@ -252,7 +252,21 @@
                             </form>
                         </div>
                     </div>
-                </div>				
+                    
+                </div>		
+                <div class="col-sm-4">
+                    <form action="{{url('/vnpay-payment')}}" method="POST">
+                        @csrf
+                        <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_vnpay" class="form-control">
+                        <button type="submit" class="btn btn-default check_out vnpay_payment_button" name="redirect">Thanh toán VNPay</button>
+                    </form>
+                    
+                    <form action="{{url('/momo-payment')}}" method="POST">
+                        @csrf
+                        <input type="hidden" value="{{$total+Session::get('fee')}}" name="total_momo" class="form-control">
+                        <button type="submit" class="btn btn-default check_out momo_payment_button" name="payUrl">Thanh toán MOMO</button>
+                    </form>    
+                </div>		
             </div>
         </div>
         @else
@@ -262,7 +276,23 @@
         @endif
         
         
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var paymentSelect = document.querySelector('.payment_select');
+                var momoPaymentButton = document.querySelector('.momo_payment_button');
+                var vnpayPaymentButton = document.querySelector('.vnpay_payment_button');
         
+                paymentSelect.addEventListener('change', function() {
+                    if (paymentSelect.value === '0') {
+                        momoPaymentButton.style.display = 'block';
+                        vnpayPaymentButton.style.display = 'block';
+                    } else {
+                        momoPaymentButton.style.display = 'none';
+                        vnpayPaymentButton.style.display = 'none';
+                    }
+                });
+            });
+        </script>
     </div>
 </section> <!--/#cart_items-->
 @endsection
