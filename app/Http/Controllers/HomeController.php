@@ -91,15 +91,14 @@ class HomeController extends Controller
         ->leftJoin('tbl_product', 'tbl_order_details.product_id', '=', 'tbl_product.product_id')
         ->leftJoin('tbl_coupon', 'tbl_order_details.product_coupon', '=', 'tbl_coupon.coupon_code')
         ->where('tbl_order_details.order_code', $order_code)
-        // ->orderBy('tbl_order_details.order_details_id', 'asc')
         ->get();
+        $order_status = DB::table('tbl_order')->where('tbl_order.order_code', $order_code)->value('order_status');
         $cate_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
         $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
-        
-        // $all_product = DB::table('tbl_product')
-        // ->join('tbl_category_product','tbl_category_product.category_id','=','tbl_product.category_id')
-        // ->join('tbl_brand_product','tbl_brand_product.brand_id','=','tbl_product.brand_id')
-        // ->orderby('tbl_product.product_id','desc')->get();
-        return view('pages.order_Customer')->with('category',$cate_product)->with('brand',$brand_product)->with('ordercustomer',$order_customer);
+        return view('pages.order_Customer')
+        ->with('category',$cate_product)
+        ->with('brand',$brand_product)
+        ->with('ordercustomer',$order_customer)
+        ->with('order_status',$order_status);
     }
 }

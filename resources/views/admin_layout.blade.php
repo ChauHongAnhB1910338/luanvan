@@ -144,7 +144,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     </a>
                     <ul class="sub">
 						<li><a href="{{URL::to('/all-customer')}}">Tất cả khách hàng</a></li>
-						<li><a href="{{URL::to('/add-customer')}}">Thêm tài khoản khách hàng</a></li>
+						{{-- <li><a href="{{URL::to('/add-customer')}}">Thêm tài khoản khách hàng</a></li> --}}
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -289,18 +289,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 data.push(rowData);
             }
 
-            var warehouse_note = $("#warehouse_note").val();
+            var warehouse_notes = $("#warehouse_notes").val();
             var _token = $('input[name="_token"]').val();
 
             // console.log(data);
-            // console.log(warehouse_note);
+            // console.log(warehouse_notes);
             $.ajax({
                 url: nhapHangUrl,
                 method: "POST",
                 data: {
                     _token: _token,
                     data: JSON.stringify(data),
-                    warehouse_note: warehouse_note
+                    warehouse_notes: warehouse_notes
                 },
                 success: function(data) {
                     swal("Thêm hóa đơn nhập hàng thành công!");

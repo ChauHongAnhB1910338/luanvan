@@ -119,7 +119,7 @@ class ProductController extends Controller
         }
 
         DB::table('tbl_product')->where('product_id',$product_id)->update($data);
-        Session::put('message','Cập nhật sản phẩm không thành công!');
+        Session::put('message','Cập nhật sản phẩm thành công!');
         return Redirect::to('all-product');
     }
     public function delete_product($product_id){

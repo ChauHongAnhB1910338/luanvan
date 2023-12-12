@@ -70,13 +70,32 @@
                           <td><input type="submit" value="Cập nhật" name="update_qty_store" class="check_out btn btn-default btn-sm"></td>
                           <td><a class="btn btn-default check_out" href="{{url('/del-all-product-store')}}">Xóa tất cả</a></td>
                       </tr>
-                      <td>
-                          @if (Session::get('coupon'))
-                              <a class="btn btn-default check_out" href="{{url('/unset-coupon')}}">Xóa mã giảm giá</a>
-                          @endif
-                      </td>
-                      <td colspan="2">
-                           <li>Tổng: <span>{{number_format($total)}} VNĐ</span></li>
+
+                      <style>
+                        td[colspan="3"] {
+                          background-color: #f2f2f2;
+                          padding: 10px;
+                          border: 1px solid #ccc;
+                          border-radius: 5px;
+                          margin-bottom: 10px;
+                        }
+
+                        td[colspan="3"] li {
+                          list-style: none;
+                          margin-bottom: 5px;
+                        }
+
+                        td[colspan="3"] span {
+                          font-weight: bold;
+                        }
+
+                        td[colspan="3"] p {
+                          margin: 5px 0;
+                        }
+                      </style>
+                      <td colspan="3">
+                           <li style="font-weight: bold;
+                           color: #ff6666;">Tổng: <span>{{number_format($total)}} VNĐ</span></li>
                           @if (Session::get('coupon'))
                           <li>
                               
@@ -90,7 +109,8 @@
                                               @endphp
                                           </p>
                                           <p>
-                                              <li>Tổng tiền phải trả: 
+                                              <li style="font-weight: bold;
+                                              color: #ff6666;">Tổng tiền phải trả: 
                                                   {{number_format($total-$total_coupon)}} VNĐ
                                               </li>
                                           </p>
@@ -101,7 +121,8 @@
                                                   $total_coupon = ($total - $cou['coupon_number']);
                                               @endphp
                                           </p>
-                                          <p><li>Tổng tiền phải trả: 
+                                          <p style="font-weight: bold;
+                                          color: #ff6666;"><li>Tổng tiền phải trả: 
                                               {{number_format($total_coupon)}} VNĐ
                                           </li></p>
                                       @endif
@@ -114,7 +135,11 @@
                           {{-- <li>Phí vận chuyển: <span>Free</span></li>
                           <li>Thành tiền: <span></span></li> --}}
                       </td>
-                      
+                      <td>
+                        @if (Session::get('coupon'))
+                            <a class="btn btn-default check_out" href="{{url('/unset-coupon')}}">Xóa mã giảm giá</a>
+                        @endif
+                      </td>
                   @else
                   <tr>
                       <td colspan="5"><center>
@@ -135,7 +160,7 @@
               <form action="{{url('/check-coupon')}}" method="POST">
                  @csrf 
                  <span>
-                    <input type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
+                    Nhập mã giảm giá (nếu có): <input type="text" name="coupon" class="form-control" placeholder="Nhập mã giảm giá"><br>
                     <input type="submit" class="btn btn-default check_coupon" name="check_coupon" value="Tính mã giảm giá">
                  </span>
                   

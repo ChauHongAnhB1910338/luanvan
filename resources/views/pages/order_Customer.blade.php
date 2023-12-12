@@ -8,8 +8,24 @@
               <li class="active">Giỏ hàng</li>
             </ol>
         </div>
+        <div>
+            <h4 style="color: red">Trạng thái đơn hàng: 
+                @if ($order_status == 1)
+                    Chưa xử lý
+                @elseif ($order_status == 2)
+                    Đã hoàn thành
+                @elseif ($order_status == 3)
+                    Đã hủy đơn
+                @elseif ($order_status == 4)
+                    Đã duyệt đơn(Người bán đang chuẩn bị hàng)
+                @elseif ($order_status == 5)
+                    Đang vận chuyển tới người nhận
+                @elseif ($order_status == 6)
+                    Đang chờ người nhận nhận hàng
+                @endif
+            </h4>
+        </div>
         <div class="table-responsive cart_info">
-
             <table class="table table-condensed">
                 <thead>
                     <tr class="cart_menu">

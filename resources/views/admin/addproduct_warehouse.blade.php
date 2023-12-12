@@ -43,7 +43,7 @@
                             <form  method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <label for="warehouse_note">Ghi chú:</label>
-                                <textarea id="warehouse_note" name="warehouse_note" required></textarea>
+                                <textarea id="warehouse_notes" name="warehouse_notes" required></textarea>
                                 <br><br>
                                 <table id="product-table">
                                     <tr>

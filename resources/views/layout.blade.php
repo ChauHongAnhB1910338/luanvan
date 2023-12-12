@@ -28,12 +28,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">
 
 	<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-	<df-messenger
-	intent="WELCOME"
-	chat-title="ChatBot_AI"
-	agent-id="148065c8-7ab3-4bd3-8e14-1cb074ffefd4"
-	language-code="vi"
-	></df-messenger>
 
 	<style>
         .image-list-brand {
@@ -140,7 +134,9 @@
 				<div style="background-color: pink;" class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-1">
-						<a href="{{URL::to('/trangchu')}}" class="active"><img style="height: 82px; padding-top: 7px" src="public/frontend/images/logo.jpg" alt=""></a>
+						<a href="{{ URL::to('/trangchu') }}" class="active">
+							<img style="height: 82px; padding-top: 7px" src="{{ asset('public/frontend/images/logo.jpg') }}" alt="">
+						</a>
 					</div>
 					<div class="col-sm-3" style="padding-top: 20px">
 						<form action="{{URL::to('/tim-kiem')}}" method="POST">
@@ -650,6 +646,17 @@
 				}
 			});
 		});
+	</script>
+	<script type="text/javascript">
+		(function(d, m){
+			var kommunicateSettings = 
+				{"appId":"fe42c738d29fa48c2a860a51e265a6a9","popupWidget":true,"automaticChatOpenOnNavigation":true};
+			var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+			s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+			var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+			window.kommunicate = m; m._globals = kommunicateSettings;
+		})(document, window.kommunicate || {});
+	/* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
 	</script>
 </body>
 </html>

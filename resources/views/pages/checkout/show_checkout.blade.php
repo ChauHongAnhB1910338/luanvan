@@ -159,11 +159,11 @@
                         border-collapse: collapse;
                     }
                 
-                    .table td {
-                        padding: 10px;
+                    .table123 td {
+                        padding: 20px;
                     }
                 
-                    .table .form-group {
+                    .table123 .form-group {
                         margin-bottom: 10px;
                     }
                 </style>
@@ -224,6 +224,11 @@
                                 <input type="text" name="shipping_email" class="shipping_email" placeholder="Email*">
                                 <input type="text" name="shipping_name" class="shipping_name" placeholder="Họ và tên">
                                 <input type="text" name="shipping_address" class="shipping_address" placeholder="Địa chỉ cụ thể">
+                                {{-- @if (Session::get('fee'))
+                                    <input type="text" name="shipping_address" class="shipping_address" value="{{Session::get('name_city')}},{{Session::get('name_quanhuyen')}},{{Session::get('name_xaphuong')}}">
+                                @else
+                                    <input type="text" name="shipping_address" class="shipping_address" placeholder="Địa chỉ cụ thể">
+                                @endif --}}
                                 <input type="text" name="shipping_phone" class="shipping_phone" placeholder="Số điện thoại">
                                 <textarea name="shipping_notes" class="shipping_notes" placeholder="Ghi chú kèm theo" rows="5"></textarea>
                                 @if (Session::get('fee'))

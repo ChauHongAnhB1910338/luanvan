@@ -238,12 +238,19 @@ class CheckoutController extends Controller
     public function calculate_fee(Request $request){
         $data = $request->all();
         if($data['matp']){
-            $feeship = Feeship::where('fee_matp',$data['matp'])->where('fee_maqh',$data['maqh'])->where('fee_xaid',$data['xaid'])->get();
+            $feeship = Feeship::where('fee_matp',$data['matp'])->where('fee_maqh',$data['maqh'])->where('fee_xaid',$data['xaid'])
+            ->join('tbl_tinhthanhpho','tbl_feeship.fee_matp','=','tbl_tinhthanhpho.matp')
+            ->join('tbl_quanhuyen','tbl_feeship.fee_maqh','=','tbl_quanhuyen.maqh')
+            ->join('tbl_xaphuongthitran','tbl_feeship.fee_xaid','=','tbl_xaphuongthitran.xaid')
+            ->get();
             if($feeship){
                 $count_feeship = $feeship->count();
                 if($count_feeship > 0){
                     foreach($feeship as $key => $fee){
                         Session::put('fee', $fee->fee_feeship);
+                        Session::put('name_city', $fee['name_city']);
+                        Session::put('name_quanhuyen', $fee['name_quanhuyen']);
+                        Session::put('name_xaphuong', $fee['name_xaphuong']);
                         Session::save();
                     }
                 }else{

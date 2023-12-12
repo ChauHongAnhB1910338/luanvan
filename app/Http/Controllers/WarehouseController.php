@@ -42,7 +42,7 @@ class WarehouseController extends Controller
         $warehouse->admin_id = '1';
         $checkout_code = substr(md5(microtime()),rand(0,26),5);
         $warehouse->warehouse_code = $checkout_code;
-        $warehouse->warehouse_notes = $data['warehouse_note'];
+        $warehouse->warehouse_notes = $data['warehouse_notes'];
         // $warehouse->warehouse_notes = 'Thử nghiệm';
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');

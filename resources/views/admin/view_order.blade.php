@@ -57,11 +57,13 @@
               <td>{{$shipping->shipping_phone}}</td>
               <td>{{$shipping->shipping_email}}</td>
               <td>{{$shipping->shipping_notes}}</td>
-              <td>
+              <td style="color: rgb(5, 39, 195)">
                 @if ($shipping->shipping_method==0)
-                    Chuyển khoản
-                @else 
+                    Chuyển khoản (chưa thanh toán)
+                @elseif($shipping->shipping_method==1)
                     Thanh toán khi nhận hàng
+                @else
+                    Chuyển khoản (đã thanh toán qua ATM)
                 @endif
               </td>
             </tr>
